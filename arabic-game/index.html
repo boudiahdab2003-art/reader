@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<title>هيّا نلعب: الفقرة والجملة والكلمة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;700;800&family=Noto+Naskh+Arabic:wght@500;700&display=swap">
+<style>
+/* Layout: one big classroom "board" card centred on a dotted textbook page; huge tap targets for a smart board. Single bright theme on purpose. */
+:root{
+  color-scheme: light;
+  --paper:#eaf5f5;      /* page ground, like the textbook's pale blue */
+  --dots:#c6e2e3;
+  --card:#ffffff;
+  --ink:#22314a;
+  --muted:#5d6b80;
+  --teal:#1b8c9e;       /* lesson-number blob */
+  --teal-soft:#cdebef;
+  --pink:#d6528a;       /* صواب badge */
+  --pink-soft:#fbe0ec;
+  --orange:#ee8d34;     /* خطأ badge */
+  --orange-soft:#fde6cf;
+  --good:#23a065;
+  --good-soft:#d8f3e5;
+  --bad:#e04a3b;
+  --bad-soft:#fde0dc;
+  --line:#b9d6da;
+  --display:"Baloo Bhaijaan 2","Tahoma","Segoe UI",sans-serif;
+  --text:"Noto Naskh Arabic","Traditional Arabic","Times New Roman",serif;
+  --r:22px;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;background:var(--paper);color:var(--ink);font-family:var(--display);
+  background-image:radial-gradient(var(--dots) 2px,transparent 2.5px);background-size:28px 28px;
+  -webkit-tap-highlight-color:transparent;
+}
+.wrap{max-width:1280px;margin:0 auto;padding-inline:16px;padding-block:12px 32px;display:flex;flex-direction:column;gap:16px;min-height:100%}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+button:focus-visible{outline:4px solid var(--teal);outline-offset:3px}
+
+/* top bar */
+.bar{display:flex;flex-wrap:wrap;align-items:center;gap:12px;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.blob{background:var(--teal);color:#fff;font-weight:800;font-size:1.6rem;width:58px;height:52px;display:grid;place-items:center;border-radius:46% 54% 40% 60%/55% 45% 55% 45%}
+.brand h1{margin:0;font-size:clamp(1.15rem,2.2vw,1.6rem);line-height:1.2;text-wrap:balance}
+.brand small{display:block;color:var(--muted);font-weight:500;font-size:.85rem}
+.tools{display:flex;gap:8px;flex-wrap:wrap}
+.tool{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:6px 14px;font-weight:700;font-size:1rem;min-height:48px}
+.tool:hover{border-color:var(--teal)}
+
+.teams{display:flex;gap:10px;flex-wrap:wrap}
+.team{display:flex;align-items:center;gap:10px;background:var(--card);border:3px solid var(--line);border-radius:18px;padding:4px 14px;font-weight:700;transition:transform .2s,border-color .2s}
+.team b{font-size:1.7rem;font-variant-numeric:tabular-nums;min-width:1.4em;text-align:center}
+.team.t0 b{color:var(--pink)} .team.t1 b{color:var(--teal)}
+.team.active{transform:scale(1.06)}
+.team.t0.active{border-color:var(--pink);background:var(--pink-soft)}
+.team.t1.active{border-color:var(--teal);background:var(--teal-soft)}
+
+/* home */
+.hero{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;background:var(--card);border-radius:var(--r);padding:20px 24px;border:3px solid var(--line)}
+.hero h2{margin:0;font-size:clamp(2rem,5vw,3.4rem);line-height:1.1;color:var(--teal)}
+.hero p{margin:4px 0 0;color:var(--muted);font-size:1.1rem}
+.switch{display:flex;align-items:center;gap:12px;background:var(--paper);border-radius:18px;padding:10px 16px;font-weight:700;font-size:1.15rem}
+.switch input{width:30px;height:30px;accent-color:var(--pink)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:16px}
+.game-card{background:var(--card);border:3px solid var(--line);border-radius:var(--r);padding:18px;display:flex;gap:16px;align-items:center;text-align:right;transition:transform .15s,border-color .15s;min-height:130px}
+.game-card:hover{transform:translateY(-3px);border-color:var(--teal)}
+.game-card:active{transform:scale(.98)}
+.gi{flex:none;width:88px;height:80px;display:grid;place-items:center;font-size:2.2rem;font-weight:800;color:#fff;border-radius:46% 54% 40% 60%/55% 45% 55% 45%}
+.game-card h3{margin:0;font-size:1.45rem;line-height:1.25}
+.game-card p{margin:2px 0 0;color:var(--muted);font-size:1rem;line-height:1.5}
+.game-card .last{display:inline-block;margin-top:6px;font-size:.9rem;font-weight:700;background:var(--good-soft);color:var(--good);border-radius:10px;padding:0 10px}
+.c-teal{background:var(--teal)} .c-pink{background:var(--pink)} .c-orange{background:var(--orange)} .c-ink{background:var(--ink)} .c-good{background:var(--good)}
+.rules{background:var(--card);border:3px dashed var(--pink);border-radius:var(--r);padding:16px 22px}
+.rules h3{margin:0 0 6px;color:var(--pink);font-size:1.3rem}
+.rules ul{margin:0;padding-inline-start:22px;font-family:var(--text);font-size:clamp(1.15rem,1.9vw,1.45rem);line-height:2}
+
+/* stage */
+.stage{background:var(--card);border-radius:28px;border:3px solid var(--line);padding:clamp(16px,3vw,36px);display:flex;flex-direction:column;gap:20px;flex:1}
+.qhead{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+.gtitle{font-size:clamp(1.3rem,2.4vw,1.9rem);font-weight:800;color:var(--teal);margin:0}
+.qnum{font-weight:700;color:var(--muted);font-size:1.1rem}
+.progress{height:12px;background:var(--teal-soft);border-radius:8px;overflow:hidden;flex-basis:100%}
+.progress i{display:block;height:100%;background:var(--teal);border-radius:8px;transition:width .4s}
+.turn{font-weight:800;font-size:1.15rem;padding:4px 14px;border-radius:12px}
+.turn.t0{background:var(--pink-soft);color:var(--pink)} .turn.t1{background:var(--teal-soft);color:var(--teal)}
+
+.passage{font-family:var(--text);font-size:clamp(1.35rem,2.5vw,2.1rem);line-height:2.1;background:var(--paper);border-radius:18px;padding:12px 22px;margin:0}
+.passage .tag{font-family:var(--display);font-size:.7em;font-weight:800;color:#fff;background:var(--teal);border-radius:10px;padding:0 10px;margin-inline-end:8px;vertical-align:middle}
+.dot{color:var(--pink);font-weight:700;font-size:1.3em}
+.q{font-size:clamp(1.6rem,3.2vw,2.7rem);font-weight:700;line-height:1.5;margin:0;text-wrap:balance}
+.q .say{font-family:var(--text);color:var(--pink);white-space:nowrap}
+.say-block{font-family:var(--text);color:var(--pink)}
+
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.opt{background:var(--paper);border:4px solid var(--line);border-radius:20px;padding:14px 18px;font-family:var(--text);font-weight:700;font-size:clamp(1.4rem,2.6vw,2.2rem);min-height:88px;line-height:1.6;transition:transform .12s,background .2s,border-color .2s}
+.opt:hover:not(:disabled){border-color:var(--teal);transform:translateY(-2px)}
+.opt:disabled{cursor:default}
+.opt.ok{background:var(--good-soft);border-color:var(--good);color:#145e3b}
+.opt.no{background:var(--bad-soft);border-color:var(--bad);color:#8f2a20}
+.opt.letter{font-size:clamp(2.6rem,6vw,4.6rem);line-height:1.2}
+
+.tf{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.tfb{border-radius:46% 54% 40% 60%/55% 45% 55% 45%;min-height:150px;font-size:clamp(2rem,4.5vw,3.4rem);font-weight:800;color:#fff;border:6px solid transparent;transition:transform .12s,opacity .2s}
+.tfb.yes{background:var(--pink)} .tfb.nope{background:var(--orange)}
+.tfb:hover:not(:disabled){transform:scale(1.03)}
+.tfb:disabled{opacity:.35;cursor:default}
+.tfb.picked{opacity:1;border-color:var(--ink)}
+.statement{font-family:var(--text);font-size:clamp(1.7rem,3.6vw,3rem);line-height:1.8;text-align:center;background:var(--paper);border-radius:20px;padding:22px;margin:0;text-wrap:balance}
+
+/* match */
+.match{position:relative;display:grid;grid-template-columns:1fr 1fr;column-gap:clamp(60px,14vw,220px);row-gap:14px}
+.match svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.col{display:flex;flex-direction:column;gap:14px}
+.mi{position:relative;z-index:1;background:var(--paper);border:4px solid var(--line);border-radius:20px;min-height:84px;padding:8px 16px;font-family:var(--text);font-weight:700;font-size:clamp(1.4rem,2.8vw,2.3rem);display:flex;align-items:center;justify-content:center;gap:12px;transition:transform .12s,border-color .2s,background .2s}
+.mi .emo{font-size:1.3em;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif}
+.mi.big{font-size:clamp(2.2rem,4.6vw,3.6rem)}
+.mi:hover:not(.done){border-color:var(--teal)}
+.mi.sel{border-color:var(--teal);background:var(--teal-soft);transform:scale(1.04)}
+.mi.done{cursor:default;color:#fff}
+
+/* count */
+.sentence{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;align-items:center;font-family:var(--text);font-size:clamp(1.7rem,3.6vw,3rem);background:var(--paper);border-radius:20px;padding:20px}
+.w{position:relative;background:var(--card);border:3px solid var(--line);border-radius:16px;padding:4px 16px;font-weight:700;line-height:1.7;transition:background .2s,border-color .2s}
+.w.on{background:var(--teal-soft);border-color:var(--teal)}
+.w .n{position:absolute;top:-16px;inset-inline-start:-10px;background:var(--teal);color:#fff;font-family:var(--display);font-size:1.1rem;width:34px;height:34px;border-radius:50%;display:grid;place-items:center}
+.w.ok{background:var(--good-soft);border-color:var(--good)}
+.w.no{background:var(--bad-soft);border-color:var(--bad)}
+.fin{font-weight:700;color:var(--pink);font-size:1.3em}
+.hint{color:var(--muted);font-size:1.15rem;margin:0;text-align:center}
+.counter{font-weight:800;color:var(--teal)}
+.nums{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+.num{width:clamp(70px,9vw,100px);height:clamp(70px,9vw,100px);border-radius:50%;background:var(--paper);border:4px solid var(--line);font-size:clamp(2rem,4vw,2.8rem);font-weight:800}
+.num:hover:not(:disabled){border-color:var(--teal)}
+.num.ok{background:var(--good);border-color:var(--good);color:#fff}
+.num.no{background:var(--bad);border-color:var(--bad);color:#fff}
+
+/* order */
+.slots{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;align-items:center;min-height:100px;background:var(--paper);border-radius:20px;padding:16px}
+.slot{min-width:110px;min-height:70px;border:3px dashed var(--teal);border-radius:16px;display:grid;place-items:center}
+.slot:has(.tile){border-color:transparent}
+.bank{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;min-height:84px}
+.tile{background:var(--orange-soft);border:3px solid var(--orange);border-radius:16px;padding:6px 18px;font-family:var(--text);font-weight:700;font-size:clamp(1.5rem,3vw,2.5rem);line-height:1.6}
+.slot .tile{background:var(--card);border-color:var(--teal)}
+.tile.ok{background:var(--good-soft)!important;border-color:var(--good)!important}
+.tile.no{background:var(--bad-soft)!important;border-color:var(--bad)!important}
+
+/* letter */
+.pic{display:flex;flex-direction:column;align-items:center;gap:4px}
+.pic .emo{font-size:clamp(5rem,12vw,9rem);line-height:1.1;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif}
+.pic .word{font-family:var(--text);font-weight:700;font-size:clamp(2.2rem,5vw,3.8rem);color:var(--ink)}
+
+/* feedback */
+.feedback{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;border-radius:20px;padding:14px 20px}
+.feedback.good{background:var(--good-soft)} .feedback.bad{background:var(--bad-soft)}
+.feedback .msg{min-width:0;flex:1 1 300px}
+.feedback strong{display:block;font-size:clamp(1.6rem,3vw,2.3rem)}
+.feedback.good strong{color:var(--good)} .feedback.bad strong{color:var(--bad)}
+.feedback p{margin:2px 0 0;font-family:var(--text);font-size:clamp(1.15rem,2vw,1.55rem);line-height:1.9}
+.next{background:var(--teal);color:#fff;font-weight:800;font-size:clamp(1.4rem,2.6vw,2rem);border-radius:18px;padding:10px 32px;min-height:72px}
+.next:hover{filter:brightness(1.08)}
+
+/* end */
+.end{align-items:center;text-align:center;justify-content:center}
+.stars{font-size:clamp(3.5rem,9vw,6rem);letter-spacing:.1em;color:var(--orange);line-height:1}
+.stars .off{color:var(--line)}
+.end h2{margin:0;font-size:clamp(2rem,5vw,3.6rem);color:var(--teal)}
+.end .score{font-size:clamp(1.5rem,3vw,2.2rem);font-weight:700}
+.end .row{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+.ghost{background:var(--paper);border:3px solid var(--teal);color:var(--teal);font-weight:800;font-size:clamp(1.3rem,2.4vw,1.8rem);border-radius:18px;padding:10px 28px;min-height:72px}
+.winner{font-size:clamp(1.5rem,3vw,2.2rem);font-weight:800;background:var(--pink-soft);color:var(--pink);border-radius:18px;padding:8px 22px}
+
+.shake{animation:shake .45s}
+@keyframes shake{20%{transform:translateX(-10px)}40%{transform:translateX(10px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
+.pop{animation:pop .4s}
+@keyframes pop{50%{transform:scale(1.08)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+#fx{position:fixed;inset:0;pointer-events:none;z-index:50;width:100%;height:100%}
+
+@media (max-width:640px){
+  .match{column-gap:40px}
+  .tf{gap:10px}
+  .tfb{min-height:110px}
+  .gi{width:64px;height:60px;font-size:1.6rem}
+}
+</style>
+
+<div class="wrap" dir="rtl" lang="ar">
+  <header class="bar">
+    <div class="brand">
+      <div class="blob" aria-hidden="true">١</div>
+      <h1>هيّا نلعب!<small>الْفِقْرَةُ وَالْجُمْلَةُ وَالْكَلِمَةُ · الْكَلِمَةُ وَالْحُروفُ الْهِجائِيَّةُ</small></h1>
+    </div>
+    <div class="teams" id="teams" hidden></div>
+    <div class="tools">
+      <button class="tool" id="homeBtn" type="button">الرئيسية</button>
+      <button class="tool" id="soundBtn" type="button">الصوت: يعمل</button>
+      <button class="tool" id="fsBtn" type="button">ملء الشاشة</button>
+    </div>
+  </header>
+  <main id="app"></main>
+</div>
+<canvas id="fx"></canvas>
+
+<script>
+(() => {
+"use strict";
+const app = document.getElementById("app");
+const AR = "٠١٢٣٤٥٦٧٨٩";
+const ar = n => String(n).replace(/\d/g, d => AR[d]);
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const dots = s => esc(s).replace(/\./g, '<span class="dot">.</span>');
+const store = { get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
+
+/* ---------- lesson content (from the textbook pages 96–98 and 102) ---------- */
+const P1 = "اِنْتَهَتِ الْعُطْلَةُ الصَّيْفِيَّةُ. اَلْيَوْمَ يَعودُ التَّلاميذُ إِلى الْمَدْرَسَةِ. اَلْيَوْمَ يَجْتَمِعُ التَّلاميذُ في الْمَلْعَبِ.";
+const P2 = "ضَجِرَتِ الشَّجَرَةُ الْكَبيرَةُ في الْمَلْعَبِ خِلالَ فَصْلِ الصَّيْفِ. هِيَ فَرِحَةٌ الْيَوْمَ بِعَوْدَةِ أَصْدِقائِها التَّلاميذِ الصِّغارِ. اَلْيَوْمَ يَجْتَمِعونَ في ظِلالِها مِنْ جَديدٍ.";
+const passage = (tag, t) => `<p class="passage"><span class="tag">${tag}</span>${dots(t)}</p>`;
+
+const MCQ = [
+  { ctx: passage("الْفِقْرَةُ الْأولى", P1), q: "كَمْ نُقْطَةً في الْفِقْرَةِ الْأولى؟", o: ["نُقْطَتانِ", "ثَلاثُ نِقاطٍ", "أَرْبَعُ نِقاطٍ"], a: 1, why: "عُدّوا النِّقاطَ الْمُلَوَّنَةَ: ١، ٢، ٣. في الْفِقْرَةِ الْأولى ثَلاثُ نِقاطٍ." },
+  { ctx: passage("الْفِقْرَةُ الْأولى", P1), q: "تَتَأَلَّفُ الْفِقْرَةُ الْأولى مِنْ…", o: ["جُمْلَتَيْنِ", "ثَلاثِ جُمَلٍ", "أَرْبَعِ جُمَلٍ"], a: 1, why: "كُلُّ جُمْلَةٍ تَنْتَهي بِنُقْطَةٍ. ثَلاثُ نِقاطٍ تَعْني ثَلاثَ جُمَلٍ." },
+  { ctx: passage("الْفِقْرَةُ الثّانِيَةُ", P2), q: "كَمْ نُقْطَةً في الْفِقْرَةِ الثّانِيَةِ؟", o: ["ثَلاثُ نِقاطٍ", "أَرْبَعُ نِقاطٍ", "نُقْطَتانِ"], a: 0, why: "في الْفِقْرَةِ الثّانِيَةِ ثَلاثُ نِقاطٍ." },
+  { ctx: passage("الْفِقْرَةُ الثّانِيَةُ", P2), q: "تَتَأَلَّفُ الْفِقْرَةُ الثّانِيَةُ مِنْ…", o: ["ثَلاثِ جُمَلٍ", "أَرْبَعِ جُمَلٍ", "جُمْلَتَيْنِ"], a: 0, why: "ثَلاثُ نِقاطٍ، إِذَنْ ثَلاثُ جُمَلٍ. الْفِقْرَةُ تَتَأَلَّفُ مِنْ جُمَلٍ." },
+  { q: 'كَمْ كَلِمَةً في جُمْلَةِ <span class="say">«اِنْتَهَتِ الْعُطْلَةُ الصَّيْفِيَّةُ.»</span>؟', o: ["كَلِمَتانِ", "ثَلاثُ كَلِماتٍ", "أَرْبَعُ كَلِماتٍ"], a: 1, why: "اِنْتَهَتِ (١) الْعُطْلَةُ (٢) الصَّيْفِيَّةُ (٣)." },
+  { q: 'كَمْ كَلِمَةً في جُمْلَةِ <span class="say">«اَلْيَوْمَ يَعودُ التَّلاميذُ إِلى الْمَدْرَسَةِ.»</span>؟', o: ["أَرْبَعُ كَلِماتٍ", "خَمْسُ كَلِماتٍ", "سِتُّ كَلِماتٍ"], a: 1, why: "اَلْيَوْمَ (١) يَعودُ (٢) التَّلاميذُ (٣) إِلى (٤) الْمَدْرَسَةِ (٥)." },
+  { q: "تَنْتَهي كُلُّ جُمْلَةٍ عادَةً…", o: ["بِفاصِلَةٍ", "بِنُقْطَةٍ"], a: 1, why: "تَنْتَهي الْجُمْلَةُ عادَةً بِنُقْطَةٍ (.)" },
+  { q: "أَيُّ مَجْموعَةٍ تُسَمّى جُمْلَةً؟", o: ["إِلى إِنَّهُ الْعَوْدَةُ الْمَدْرَسَةُ يَوْمُ.", "إِنَّهُ يَوْمُ الْعَوْدَةِ إِلى الْمَدْرَسَةِ."], a: 1, why: "نُسَمّي مَجْموعَةَ الْكَلِماتِ جُمْلَةً حينَ تُفيدُ مَعْنًى تامًّا. الْمَجْموعَةُ الْأولى لا تُفيدُ مَعْنًى." },
+  { q: "تَتَأَلَّفُ الْجُمْلَةُ مِنْ…", o: ["فِقْراتٍ", "جُمَلٍ", "كَلِماتٍ"], a: 2, why: "تَتَأَلَّفُ الْجُمْلَةُ مِنْ كَلِماتٍ." },
+  { q: 'تَتَأَلَّفُ جُمْلَةُ <span class="say">«اِرْتَدى سَميرٌ سُتْرَةً رَقيقَةً.»</span> مِنْ…', o: ["كَلِمَتَيْنِ", "ثَلاثِ كَلِماتٍ", "أَرْبَعِ كَلِماتٍ"], a: 2, why: "اِرْتَدى (١) سَميرٌ (٢) سُتْرَةً (٣) رَقيقَةً (٤)." },
+  { q: 'تَتَأَلَّفُ كَلِمَةُ <span class="say">«سَميرٌ»</span> مِنْ…', o: ["ثَلاثَةِ أَحْرُفٍ", "أَرْبَعَةِ أَحْرُفٍ", "خَمْسَةِ أَحْرُفٍ"], a: 1, why: "س – م – ي – ر: أَرْبَعَةُ أَحْرُفٍ. الْكَلِمَةُ تَتَأَلَّفُ مِنْ أَحْرُفٍ." },
+  { q: "تَتَأَلَّفُ الْكَلِمَةُ مِنْ…", o: ["أَحْرُفٍ", "جُمَلٍ", "فِقْراتٍ"], a: 0, why: "تَتَأَلَّفُ الْكَلِمَةُ مِنْ أَحْرُفٍ." },
+];
+
+const TF = [
+  { s: "تَتَأَلَّفُ الْفِقْرَةُ مِنْ جُمَلٍ.", a: true, why: "صَحيحٌ! الْفِقْرَةُ ← جُمَلٌ." },
+  { s: "تَتَأَلَّفُ الْجُمْلَةُ مِنْ مَجْموعَةِ كَلِماتٍ تُفيدُ مَعْنًى تامًّا.", a: true, why: "صَحيحٌ! الْجُمْلَةُ ← كَلِماتٌ تُفيدُ مَعْنًى تامًّا." },
+  { s: "تَنْتَهي الْجُمْلَةُ عادَةً بِنُقْطَةٍ.", a: true, why: "صَحيحٌ! في آخِرِ الْجُمْلَةِ نُقْطَةٌ (.)" },
+  { s: "تَتَأَلَّفُ الْكَلِمَةُ مِنْ جُمَلٍ.", a: false, why: "خَطَأٌ! الْكَلِمَةُ تَتَأَلَّفُ مِنْ أَحْرُفٍ." },
+  { s: "تَنْتَهي الْجُمْلَةُ عادَةً بِفاصِلَةٍ.", a: false, why: "خَطَأٌ! الْجُمْلَةُ تَنْتَهي عادَةً بِنُقْطَةٍ." },
+  { s: "تَتَأَلَّفُ الْكَلِمَةُ مِنْ أَحْرُفٍ.", a: true, why: "صَحيحٌ! مِثْلُ: سَميرٌ = س م ي ر." },
+  { s: "«إِلى إِنَّهُ الْعَوْدَةُ الْمَدْرَسَةُ يَوْمُ» جُمْلَةٌ تُفيدُ مَعْنًى تامًّا.", a: false, why: "خَطَأٌ! الْكَلِماتُ غَيْرُ مُرَتَّبَةٍ فَلا تُفيدُ مَعْنًى تامًّا." },
+  { s: "تَتَأَلَّفُ جُمْلَةُ «اِنْتَهَتِ الْعُطْلَةُ الصَّيْفِيَّةُ.» مِنْ خَمْسِ كَلِماتٍ.", a: false, why: "خَطَأٌ! فيها ثَلاثُ كَلِماتٍ فَقَطْ." },
+  { s: "تَتَأَلَّفُ الْفِقْرَةُ الْأولى مِنْ ثَلاثِ جُمَلٍ.", a: true, why: "صَحيحٌ! فيها ثَلاثُ نِقاطٍ، إِذَنْ ثَلاثُ جُمَلٍ." },
+  { s: "تَتَأَلَّفُ الْجُمْلَةُ مِنْ فِقْراتٍ.", a: false, why: "خَطَأٌ! الْفِقْرَةُ هِيَ الَّتي تَتَأَلَّفُ مِنْ جُمَلٍ، وَالْجُمْلَةُ مِنْ كَلِماتٍ." },
+];
+
+/* alphabet chart (page 102); feather/olive left out because older smart-board PCs lack those pictures */
+const ABC = [
+  ["أ","أَناناس","🍍"],["ب","بَيْت","🏠"],["ت","تُفّاحَة","🍎"],["ث","ثَلْج","❄️"],["ج","جَزَر","🥕"],["ح","حَقيبَة","🎒"],
+  ["خ","خُبْز","🍞"],["د","دَرّاجَة","🚲"],["ذ","ذُرَة","🌽"],["س","سَفينَة","⛵"],["ش","شَمْس","☀️"],["ص","صاروخ","🚀"],
+  ["ض","ضَوْء","💡"],["ط","طائِرَة","✈️"],["ظ","ظَرْف","✉️"],["ع","عِنَب","🍇"],["غ","غَيْم","☁️"],["ف","فَراوِلَة","🍓"],
+  ["ق","قَلَم","✏️"],["ك","كُرْسِيّ","🪑"],["ل","لَيْمونَة","🍋"],["م","مَوْزَة","🍌"],["ن","نَجْمَة","⭐"],["ه","هَدِيَّة","🎁"],
+  ["و","وَرْدَة","🌹"],["ي","يَقْطين","🎃"],
+];
+const LOOKALIKE = [["ب","ت","ث","ن","ي"],["ج","ح","خ"],["د","ذ"],["س","ش"],["ص","ض"],["ط","ظ"],["ع","غ"],["ف","ق"]];
+
+const COUNT = [
+  { s: "ضَجِرَتِ الشَّجَرَةُ خِلالَ فَصْلِ الصَّيْفِ", n: 5 },
+  { s: "سَيَجْتَمِعُ الصِّغارُ مِنْ جَديدٍ في ظِلالِ أَغْصاني", n: 7 },
+  { s: "هٰذِهِ هِيَ سَميرَةُ تَصِلُ مَسْرورَةً", n: 5 },
+  { s: "اِنْتَهَتِ الْعُطْلَةُ الصَّيْفِيَّةُ", n: 3 },
+  { s: "اَلْيَوْمَ يَجْتَمِعُ التَّلاميذُ في الْمَلْعَبِ", n: 5 },
+  { s: "اِرْتَدى سَميرٌ سُتْرَةً رَقيقَةً", n: 4 },
+];
+
+const ORDER = [
+  "إِنَّهُ يَوْمُ الْعَوْدَةِ إِلى الْمَدْرَسَةِ",
+  "تَتَأَلَّفُ الْفِقْرَةُ مِنْ مَجْموعَةِ جُمَلٍ",
+  "اَلْيَوْمَ يَعودُ التَّلاميذُ إِلى الْمَدْرَسَةِ",
+  "تَنْتَهي الْجُمْلَةُ عادَةً بِنُقْطَةٍ",
+  "اِنْتَهَتِ الْعُطْلَةُ الصَّيْفِيَّةُ",
+  "تَتَأَلَّفُ الْجُمْلَةُ مِنْ مَجْموعَةِ كَلِماتٍ تُفيدُ مَعْنًى تامًّا",
+];
+
+/* ---------- state ---------- */
+const S = {
+  teamMode: store.get("teamMode", true),
+  teams: [{ name: "فَريقُ النُّجومِ", score: 0 }, { name: "فَريقُ الْأَقْمارِ", score: 0 }],
+  turn: 0,
+  sound: true,
+  last: store.get("lastResults", {}),
+};
+
+/* ---------- sound ---------- */
+let ac;
+function tone(freqs, type, dur) {
+  if (!S.sound) return;
+  try {
+    ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+    freqs.forEach((f, i) => {
+      const o = ac.createOscillator(), g = ac.createGain(), t = ac.currentTime + i * dur * .8;
+      o.type = type; o.frequency.value = f;
+      g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.25, t + .02); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+      o.connect(g).connect(ac.destination); o.start(t); o.stop(t + dur + .02);
+    });
+  } catch (e) {}
+}
+const sGood = () => tone([523, 659, 784], "triangle", .16);
+const sBad = () => tone([220, 175], "sawtooth", .2);
+const sWin = () => tone([523, 659, 784, 1047, 784, 1047], "triangle", .17);
+
+/* ---------- confetti ---------- */
+const cv = document.getElementById("fx"), cx = cv.getContext("2d");
+let bits = [], raf = 0;
+const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+function confetti(n = 90) {
+  if (reduce) return;
+  cv.width = innerWidth; cv.height = innerHeight;
+  const cols = ["#d6528a", "#1b8c9e", "#ee8d34", "#23a065", "#f5c542"];
+  for (let i = 0; i < n; i++) bits.push({ x: innerWidth / 2 + (Math.random() - .5) * 200, y: innerHeight * .45, vx: (Math.random() - .5) * 16, vy: -Math.random() * 16 - 4, r: Math.random() * 6 + 5, c: cols[i % cols.length], a: Math.random() * 6, life: 0 });
+  if (!raf) raf = requestAnimationFrame(tick);
+}
+function tick() {
+  cx.clearRect(0, 0, cv.width, cv.height);
+  bits = bits.filter(b => b.life < 140 && b.y < cv.height + 20);
+  bits.forEach(b => { b.life++; b.vy += .45; b.vx *= .99; b.x += b.vx; b.y += b.vy; b.a += .2; cx.save(); cx.translate(b.x, b.y); cx.rotate(b.a); cx.fillStyle = b.c; cx.fillRect(-b.r / 2, -b.r / 4, b.r, b.r / 2); cx.restore(); });
+  raf = bits.length ? requestAnimationFrame(tick) : 0;
+  if (!raf) cx.clearRect(0, 0, cv.width, cv.height);
+}
+
+/* ---------- teams bar ---------- */
+const teamsEl = document.getElementById("teams");
+function drawTeams() {
+  teamsEl.hidden = !S.teamMode;
+  teamsEl.innerHTML = S.teams.map((t, i) => `<div class="team t${i}${S.turn === i ? " active" : ""}"><span>${t.name}</span><b>${ar(t.score)}</b></div>`).join("");
+}
+
+/* ---------- games ---------- */
+const GAMES = [
+  { id: "mcq", title: "اِخْتَرِ الْجَوابَ الصَّحيحَ", desc: "سُؤالٌ وَأَجْوِبَةٌ، اِخْتَرِ الصَّحيحَ.", icon: "؟", color: "c-teal", build: () => shuffle(MCQ).slice(0, 10), render: renderMCQ },
+  { id: "tf", title: "صَوابٌ أَمْ خَطَأٌ؟", desc: "اِقْرَأِ الْجُمْلَةَ وَاحْكُمْ عَلَيْها.", icon: "✓✗", color: "c-pink", build: () => shuffle(TF).slice(0, 8), render: renderTF },
+  { id: "match", title: "صِلْ بِخَطٍّ", desc: "صِلْ كُلَّ كَلِمَةٍ بِما يُناسِبُها.", icon: "⟷", color: "c-orange", build: buildMatch, render: renderMatch },
+  { id: "count", title: "عُدَّ الْكَلِماتِ", desc: "اُنْقُرْ عَلى كُلِّ كَلِمَةٍ وَعُدَّها.", icon: "١٢٣", color: "c-ink", build: () => shuffle(COUNT), render: renderCount },
+  { id: "order", title: "رَتِّبِ الْجُمْلَةَ", desc: "رَتِّبِ الْكَلِماتِ لِتُفيدَ مَعْنًى تامًّا.", icon: "⇆", color: "c-good", build: () => shuffle(ORDER).slice(0, 5), render: renderOrder },
+  { id: "letter", title: "الْحَرْفُ الْأَوَّلُ", desc: "بِأَيِّ حَرْفٍ تَبْدَأُ الْكَلِمَةُ؟", icon: "أ ب", color: "c-pink", build: () => shuffle(ABC).slice(0, 8), render: renderLetter },
+];
+
+function home() {
+  S.game = null;
+  drawTeams();
+  app.innerHTML = `
+  <section class="hero">
+    <div><h2>اِخْتاروا لُعْبَةً!</h2><p>قَواعِدُ – الدَّرْسُ الْأَوَّلُ وَالدَّرْسُ الثّاني</p></div>
+    <label class="switch" for="teamToggle"><input type="checkbox" id="teamToggle" ${S.teamMode ? "checked" : ""}> اللَّعِبُ بِفَريقَيْنِ</label>
+  </section>
+  <section class="grid">${GAMES.map(g => {
+    const l = S.last[g.id];
+    return `<button class="game-card" type="button" data-g="${g.id}"><span class="gi ${g.color}" aria-hidden="true">${g.icon}</span><span><h3>${g.title}</h3><p>${g.desc}</p>${l ? `<span class="last">آخِرُ نَتيجَةٍ: ${ar(l.c)} مِنْ ${ar(l.t)}</span>` : ""}</span></button>`;
+  }).join("")}</section>
+  <section class="rules"><h3>أَتَعَلَّمُ</h3><ul>
+    <li>تَتَأَلَّفُ الْفِقْرَةُ مِنْ جُمَلٍ.</li>
+    <li>تَتَأَلَّفُ الْجُمْلَةُ مِنْ كَلِماتٍ.</li>
+    <li>تَتَأَلَّفُ الْكَلِمَةُ مِنْ أَحْرُفٍ.</li>
+    <li>نُسَمّي مَجْموعَةَ الْكَلِماتِ جُمْلَةً حينَ تُفيدُ مَعْنًى تامًّا.</li>
+    <li>تَنْتَهي الْجُمْلَةُ عادَةً بِنُقْطَةٍ.</li>
+  </ul></section>`;
+  app.querySelector("#teamToggle").onchange = e => { S.teamMode = e.target.checked; store.set("teamMode", S.teamMode); drawTeams(); };
+  app.querySelectorAll("[data-g]").forEach(b => b.onclick = () => start(GAMES.find(g => g.id === b.dataset.g)));
+}
+
+function start(g) {
+  S.game = g; S.qs = g.build(); S.i = 0; S.correct = 0; S.total = 0;
+  S.teams.forEach(t => t.score = 0); S.turn = 0;
+  question();
+}
+
+function question() {
+  drawTeams();
+  const g = S.game, q = S.qs[S.i];
+  app.innerHTML = `<section class="stage">
+    <div class="qhead">
+      <h2 class="gtitle">${g.title}</h2>
+      ${S.teamMode ? `<span class="turn t${S.turn}">الدَّوْرُ لِـ${S.teams[S.turn].name}</span>` : ""}
+      <span class="qnum">${ar(S.i + 1)} مِنْ ${ar(S.qs.length)}</span>
+      <div class="progress"><i style="width:${(S.i / S.qs.length) * 100}%"></i></div>
+    </div>
+    <div class="body" style="display:flex;flex-direction:column;gap:20px"></div>
+    <div class="feedback" hidden></div>
+  </section>`;
+  const body = app.querySelector(".body");
+  let finished = false;
+  const api = {
+    right() { S.correct++; S.total++; if (S.teamMode) S.teams[S.turn].score++; sGood(); confetti(60); drawTeams(); },
+    wrong() { S.total++; sBad(); },
+    finish(ok, title, why) {
+      if (finished) return; finished = true;
+      const fb = app.querySelector(".feedback");
+      fb.className = "feedback pop " + (ok ? "good" : "bad");
+      const last = S.i === S.qs.length - 1;
+      fb.innerHTML = `<div class="msg"><strong>${title}</strong>${why ? `<p>${why}</p>` : ""}</div><button class="next" type="button">${last ? "النَّتيجَةُ" : "التّالي ←"}</button>`;
+      fb.hidden = false;
+      const nx = fb.querySelector(".next");
+      nx.onclick = () => { S.i++; if (S.teamMode) S.turn = 1 - S.turn; S.i < S.qs.length ? question() : end(); };
+      nx.focus({ preventScroll: true });
+      fb.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "nearest" });
+    },
+  };
+  g.render(q, body, api);
+}
+
+const GOOD = ["أَحْسَنْتُمْ!", "مُمْتازٌ!", "رائِعٌ!", "بَرافو!", "إِجابَةٌ صَحيحَةٌ!"];
+const praise = () => GOOD[Math.floor(Math.random() * GOOD.length)];
+
+function renderMCQ(q, body, api) {
+  const order = shuffle(q.o.map((t, i) => i));
+  body.innerHTML = `${q.ctx || ""}<p class="q">${q.q}</p><div class="opts">${order.map(i => `<button class="opt" type="button" data-i="${i}">${esc(q.o[i])}</button>`).join("")}</div>`;
+  const btns = [...body.querySelectorAll(".opt")];
+  btns.forEach(b => b.onclick = () => {
+    const i = +b.dataset.i, ok = i === q.a;
+    btns.forEach(x => { x.disabled = true; if (+x.dataset.i === q.a) x.classList.add("ok"); });
+    if (ok) { api.right(); api.finish(true, praise(), q.why); }
+    else { b.classList.add("no", "shake"); api.wrong(); api.finish(false, `الْجَوابُ الصَّحيحُ: ${esc(q.o[q.a])}`, q.why); }
+  });
+}
+
+function renderTF(q, body, api) {
+  body.innerHTML = `<p class="statement">${dots(q.s)}</p><div class="tf"><button class="tfb yes" type="button" data-v="1">صَوابٌ ✓</button><button class="tfb nope" type="button" data-v="0">خَطَأٌ ✗</button></div>`;
+  const btns = [...body.querySelectorAll(".tfb")];
+  btns.forEach(b => b.onclick = () => {
+    const v = b.dataset.v === "1", ok = v === q.a;
+    btns.forEach(x => x.disabled = true);
+    b.classList.add("picked", ok ? "pop" : "shake");
+    if (ok) { api.right(); api.finish(true, praise(), q.why); }
+    else { api.wrong(); api.finish(false, `الْجَوابُ: ${q.a ? "صَوابٌ" : "خَطَأٌ"}`, q.why); }
+  });
+}
+
+function buildMatch() {
+  const rounds = [{ pairs: [["الْفِقْرَةُ", "جُمَلٌ"], ["الْجُمْلَةُ", "كَلِماتٌ"], ["الْكَلِمَةُ", "أَحْرُفٌ"]], hint: "مِمَّ تَتَأَلَّفُ؟ صِلْ كُلَّ كَلِمَةٍ بِما تَتَأَلَّفُ مِنْهُ." }];
+  const pool = shuffle(ABC);
+  for (let r = 0; r < 3; r++) rounds.push({ pairs: pool.slice(r * 4, r * 4 + 4).map(([l, w, e]) => [l, `<span class="emo">${e}</span>${w}`]), hint: "صِلِ الْحَرْفَ بِالصّورَةِ الَّتي تَبْدَأُ بِهِ.", big: true });
+  return rounds;
+}
+const PAIRCOLS = ["#d6528a", "#1b8c9e", "#ee8d34", "#23a065"];
+function renderMatch(q, body, api) {
+  const right = shuffle(q.pairs.map((p, i) => i)), left = shuffle(q.pairs.map((p, i) => i));
+  body.innerHTML = `<p class="hint" style="font-size:1.4rem">${q.hint}</p>
+    <div class="match"><svg aria-hidden="true"></svg>
+      <div class="col a">${right.map(i => `<button class="mi${q.big ? " big" : ""}" type="button" data-i="${i}">${q.pairs[i][0]}</button>`).join("")}</div>
+      <div class="col b">${left.map(i => `<button class="mi" type="button" data-i="${i}">${q.pairs[i][1]}</button>`).join("")}</div>
+    </div>`;
+  const box = body.querySelector(".match"), svg = box.querySelector("svg");
+  let sel = null, done = 0, mistakes = 0;
+  const links = [];
+  const draw = () => {
+    const br = box.getBoundingClientRect();
+    svg.innerHTML = links.map(([a, b, c]) => {
+      const ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect();
+      const x1 = ra.left - br.left, y1 = ra.top + ra.height / 2 - br.top, x2 = rb.right - br.left, y2 = rb.top + rb.height / 2 - br.top;
+      return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="7" stroke-linecap="round"/><circle cx="${x1}" cy="${y1}" r="9" fill="${c}"/><circle cx="${x2}" cy="${y2}" r="9" fill="${c}"/>`;
+    }).join("");
+  };
+  const ro = new ResizeObserver(draw); ro.observe(box);
+  body.querySelectorAll(".mi").forEach(b => b.onclick = () => {
+    if (b.classList.contains("done")) return;
+    if (!sel || sel.parentElement === b.parentElement) { if (sel) sel.classList.remove("sel"); sel = b; b.classList.add("sel"); return; }
+    const a = sel.parentElement.classList.contains("a") ? sel : b, c = a === sel ? b : sel;
+    sel.classList.remove("sel"); sel = null;
+    if (a.dataset.i === c.dataset.i) {
+      const col = PAIRCOLS[done % PAIRCOLS.length];
+      [a, c].forEach(x => { x.classList.add("done", "pop"); x.style.background = col; x.style.borderColor = col; });
+      links.push([a, c, col]); draw(); done++;
+      if (done === q.pairs.length) {
+        if (mistakes === 0) { api.right(); api.finish(true, praise(), "وَصَلْتُمْ كُلَّ شَيْءٍ مِنَ الْمَرَّةِ الْأولى."); }
+        else { S.total++; sGood(); api.finish(true, "أَكْمَلْتُمُ التَّوْصيلَ!", `عَدَدُ الْمُحاوَلاتِ الْخاطِئَةِ: ${ar(mistakes)}. حاوِلوا الْمَرَّةَ الْقادِمَةَ بِلا أَخْطاءٍ.`); }
+      } else tone([660], "triangle", .12);
+    } else {
+      mistakes++; sBad();
+      [a, c].forEach(x => { x.classList.remove("shake"); void x.offsetWidth; x.classList.add("shake"); });
+    }
+  });
+}
+
+function renderCount(q, body, api) {
+  const words = q.s.split(" ");
+  body.innerHTML = `<p class="q">كَمْ كَلِمَةً في هٰذِهِ الْجُمْلَةِ؟</p>
+    <div class="sentence">${words.map((w, i) => `<button class="w" type="button" data-i="${i}">${w}${i === words.length - 1 ? '<span class="fin">.</span>' : ""}</button>`).join("")}</div>
+    <p class="hint">اُنْقُروا عَلى الْكَلِماتِ لِعَدِّها: <span class="counter">${ar(0)}</span></p>
+    <div class="nums">${[2, 3, 4, 5, 6, 7].map(n => `<button class="num" type="button" data-n="${n}">${ar(n)}</button>`).join("")}</div>`;
+  let c = 0;
+  const counter = body.querySelector(".counter"), ws = [...body.querySelectorAll(".w")];
+  ws.forEach(w => w.onclick = () => {
+    if (w.classList.contains("on") || w.disabled) return;
+    c++; w.classList.add("on"); w.insertAdjacentHTML("beforeend", `<span class="n">${ar(c)}</span>`); counter.textContent = ar(c); tone([440 + c * 60], "triangle", .1);
+  });
+  const nums = [...body.querySelectorAll(".num")];
+  nums.forEach(b => b.onclick = () => {
+    const n = +b.dataset.n, ok = n === q.n;
+    nums.forEach(x => { x.disabled = true; if (+x.dataset.n === q.n) x.classList.add("ok"); });
+    ws.forEach((w, i) => { w.disabled = true; w.classList.add("ok"); if (!w.querySelector(".n")) w.insertAdjacentHTML("beforeend", `<span class="n">${ar(i + 1)}</span>`); else w.querySelector(".n").textContent = ar(i + 1); });
+    if (ok) { api.right(); api.finish(true, praise(), `في الْجُمْلَةِ ${ar(q.n)} كَلِماتٍ.`); }
+    else { b.classList.add("no", "shake"); api.wrong(); api.finish(false, `الْجَوابُ: ${ar(q.n)}`, "عُدّوا الْكَلِماتِ الْمُرَقَّمَةَ مَعًا."); }
+  });
+}
+
+function renderOrder(sentence, body, api) {
+  const words = sentence.split(" ");
+  let bank = shuffle(words.map((w, i) => i));
+  if (bank.every((v, i) => v === i)) bank.reverse();
+  const slots = Array(words.length).fill(null);
+  let first = true, locked = false;
+  body.innerHTML = `<p class="q">رَتِّبوا الْكَلِماتِ لِتَصيرَ جُمْلَةً تُفيدُ مَعْنًى تامًّا.</p><div class="slots"></div><div class="bank"></div>`;
+  const slotsEl = body.querySelector(".slots"), bankEl = body.querySelector(".bank");
+  function paint() {
+    slotsEl.innerHTML = slots.map((w, k) => `<div class="slot">${w === null ? "" : `<button class="tile" type="button" data-s="${k}">${words[w]}</button>`}</div>`).join("") + '<span class="fin" style="font-family:var(--text);font-size:2.5rem">.</span>';
+    bankEl.innerHTML = bank.map(i => `<button class="tile" type="button" data-b="${i}">${words[i]}</button>`).join("");
+    slotsEl.querySelectorAll("[data-s]").forEach(t => t.onclick = () => { if (locked) return; const k = +t.dataset.s; bank.push(slots[k]); slots[k] = null; paint(); });
+    bankEl.querySelectorAll("[data-b]").forEach(t => t.onclick = () => {
+      if (locked) return;
+      const i = +t.dataset.b, k = slots.indexOf(null); slots[k] = i; bank = bank.filter(x => x !== i); paint(); tone([500], "triangle", .08);
+      if (!slots.includes(null)) check();
+    });
+  }
+  function check() {
+    const tiles = [...slotsEl.querySelectorAll(".tile")];
+    const okAll = slots.every((w, k) => words[w] === words[k]);
+    tiles.forEach((t, k) => t.classList.add(words[slots[k]] === words[k] ? "ok" : "no"));
+    if (okAll) {
+      locked = true;
+      if (first) { api.right(); api.finish(true, praise(), `${sentence}.`); }
+      else { sGood(); api.finish(true, "رَتَّبْتُمُ الْجُمْلَةَ!", `${sentence}.`); }
+      return;
+    }
+    if (first) { first = false; api.wrong(); } else sBad();
+    locked = true;
+    setTimeout(() => {
+      slots.forEach((w, k) => { if (words[w] !== words[k]) { bank.push(w); slots[k] = null; } });
+      locked = false; paint();
+    }, 1100);
+  }
+  paint();
+}
+
+function renderLetter(item, body, api) {
+  const [L, W, E] = item;
+  const grp = LOOKALIKE.find(g => g.includes(L)) || [];
+  const others = shuffle(grp.filter(x => x !== L)).concat(shuffle(ABC.map(a => a[0]).filter(x => x !== L && !grp.includes(x))));
+  const opts = shuffle([L, others[0], others[1]]);
+  body.innerHTML = `<p class="q">بِأَيِّ حَرْفٍ تَبْدَأُ هٰذِهِ الْكَلِمَةُ؟</p>
+    <div class="pic"><span class="emo" aria-hidden="true">${E}</span><span class="word">${W}</span></div>
+    <div class="opts">${opts.map(o => `<button class="opt letter" type="button" data-l="${o}">${o}</button>`).join("")}</div>`;
+  const btns = [...body.querySelectorAll(".opt")];
+  btns.forEach(b => b.onclick = () => {
+    const ok = b.dataset.l === L;
+    btns.forEach(x => { x.disabled = true; if (x.dataset.l === L) x.classList.add("ok"); });
+    if (ok) { api.right(); api.finish(true, praise(), `كَلِمَةُ «${W}» تَبْدَأُ بِحَرْفِ ${L}.`); }
+    else { b.classList.add("no", "shake"); api.wrong(); api.finish(false, `الْجَوابُ: ${L}`, `كَلِمَةُ «${W}» تَبْدَأُ بِحَرْفِ ${L}.`); }
+  });
+}
+
+function end() {
+  const g = S.game, pct = S.total ? S.correct / S.total : 0;
+  const stars = pct >= .9 ? 3 : pct >= .6 ? 2 : pct > 0 ? 1 : 0;
+  S.last[g.id] = { c: S.correct, t: S.total }; store.set("lastResults", S.last);
+  let win = "";
+  if (S.teamMode) {
+    const [a, b] = S.teams;
+    win = a.score === b.score ? "تَعادُلٌ! أَحْسَنَ الْفَريقانِ" : `فازَ ${a.score > b.score ? a.name : b.name}!`;
+  }
+  sWin(); confetti(160);
+  app.innerHTML = `<section class="stage end">
+    <div class="stars" aria-label="${stars} من 3">${[0, 1, 2].map(i => `<span class="${i < stars ? "" : "off"}">★</span>`).join("")}</div>
+    <h2>${stars === 3 ? "أَبْطالٌ!" : stars === 2 ? "عَمَلٌ رائِعٌ!" : "أَحْسَنْتُمُ الْمُحاوَلَةَ!"}</h2>
+    <p class="score">الْإِجاباتُ الصَّحيحَةُ: ${ar(S.correct)} مِنْ ${ar(S.total)}</p>
+    ${win ? `<p class="winner">${win} (${ar(S.teams[0].score)} – ${ar(S.teams[1].score)})</p>` : ""}
+    <div class="row"><button class="next" type="button" id="again">اِلْعَبوا مَرَّةً أُخْرى</button><button class="ghost" type="button" id="other">لُعْبَةٌ أُخْرى</button></div>
+  </section>`;
+  app.querySelector("#again").onclick = () => start(g);
+  app.querySelector("#other").onclick = home;
+}
+
+/* ---------- tools ---------- */
+document.getElementById("homeBtn").onclick = home;
+const soundBtn = document.getElementById("soundBtn");
+soundBtn.onclick = () => { S.sound = !S.sound; soundBtn.textContent = "الصوت: " + (S.sound ? "يعمل" : "مُطفأ"); };
+const fsBtn = document.getElementById("fsBtn");
+fsBtn.onclick = () => {
+  try {
+    if (document.fullscreenElement) document.exitFullscreen();
+    else { const p = document.documentElement.requestFullscreen && document.documentElement.requestFullscreen(); if (p && p.catch) p.catch(() => {}); }
+  } catch (e) {}
+};
+addEventListener("resize", () => { if (raf) { cv.width = innerWidth; cv.height = innerHeight; } });
+
+home();
+})();
+</script>
+
+</body>
+</html>
