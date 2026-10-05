@@ -254,6 +254,8 @@ button:focus-visible{outline:4px solid var(--sun);outline-offset:3px}
 .pic .word{font-family:var(--txt);font-weight:700;font-size:clamp(2.2rem,5vw,3.6rem)}
 
 .qkw{font-size:clamp(2.2rem,5vw,3.6rem)}
+.lq{color:var(--red)}
+.lq.big{font-family:var(--txt);font-size:1.25em}
 .gapq{color:var(--red);background:var(--red-s);border-radius:12px;padding:0 8px}
 /* match */
 .match{position:relative;display:grid;grid-template-columns:1fr 1fr;column-gap:clamp(56px,13vw,200px);row-gap:14px}
@@ -410,6 +412,7 @@ var SK = {
   abc:   { n: "الْحُروفُ الْهِجائِيَّةُ", r: "نَنْظُرُ إِلى أَوَّلِ حَرْفٍ في الْكَلِمَةِ: تُفّاحَة تَبْدَأُ بِـ ت." },
   rules: { n: "مِمَّ يَتَأَلَّفُ كُلُّ شَيْءٍ؟", r: "الْفِقْرَةُ ← جُمَلٌ، الْجُمْلَةُ ← كَلِماتٌ، الْكَلِمَةُ ← أَحْرُفٌ." },
   qk:    { n: "ق أَمْ ك؟", r: "ق وَ ك مُتَقارِبانِ في النُّطْقِ: نَسْمَعُ جَيِّدًا وَنَكْتُبُ: قَلَم، حَقيبَة، رِفاق – كِتاب، سَمَك، كَلام." },
+  qkpos: { n: "مَكانُ الْحَرْفِ وَشَكْلُهُ", r: "يَتَغَيَّرُ شَكْلُ الْحَرْفِ حَسَبَ مَكانِهِ: كـ في الْأَوَّلِ، ـكـ في الْوَسَطِ، ـك أَوْ ك في الْآخِرِ." },
   read:  { n: "فَهْمُ الْفِقْرَةِ", r: "نَقْرَأُ الْفِقْرَةَ بِانْتِباهٍ قَبْلَ أَنْ نُجيبَ." }
 };
 
@@ -577,6 +580,24 @@ var QKLETTER = mk("qkletter", [
   { d: "الْمَـ؟ـعَد", f: "الْمَقْعَد", L: "ق", e: "🪑" }, { d: "طارِ؟", f: "طارِق", L: "ق", e: "👦" }, { d: "وَ؟ـت", f: "وَقْت", L: "ق", e: "⏰" },
   { d: "؟ـمال", f: "كَمال", L: "ك", e: "🎒" }
 ].map(function (x) { x.k = "qk"; return x; }));
+var P3 = "اِقْتَرَبَ مَوْعِدُ الذَّهابِ إِلى الْمَدْرَسَةِ. قالَتِ الشَّجَرَةُ الْكَبيرَةُ بِرِفْقٍ: «كَمْ أَنا مُشْتاقَةٌ إِلى رُؤْيَةِ الرِّفاقِ الصِّغارِ. لَقَدْ مَرَّ وَقْتٌ طَويلٌ مُنْذُ تَرَكوا الْمَدْرَسَةَ.»";
+var P4 = "دَقَّ الْجَرَسُ. حَمَلَ كَمالٌ حَقيبَتَهُ وَرافَقَ رَفيقَهُ مُكَرَّم. جَلَسَ كَمالٌ عَلى الْمَقْعَدِ قُرْبَ طارِق وَمَلَك.";
+var HUNT = mk("hunt", [
+  { p: P3, L: "ق", tag: "اِقْرَأْ وَلَوِّنْ" }, { p: P3, L: "ك", tag: "اِقْرَأْ وَلَوِّنْ" },
+  { p: P4, L: "ق", tag: "الْإِمْلاءُ التَّطْبيقِيُّ" }, { p: P4, L: "ك", tag: "الْإِمْلاءُ التَّطْبيقِيُّ" }
+].map(function (x) { x.k = "qk"; return x; }));
+var POSW = mk("pos", [
+  ["قَلَم", "ق"], ["حَقيبَة", "ق"], ["رِفاق", "ق"], ["وَقْت", "ق"], ["طارِق", "ق"], ["قالَتْ", "ق"], ["لَقَدْ", "ق"], ["قُرْب", "ق"], ["رَفيق", "ق"], ["الْمَقْعَد", "ق"],
+  ["كِتاب", "ك"], ["سَمَك", "ك"], ["سَكَتَ", "ك"], ["كَمال", "ك"], ["مَلِك", "ك"], ["أَسْماك", "ك"], ["كَلام", "ك"], ["مُكَرَّم", "ك"]
+].map(function (x) { return { w: x[0], L: x[1], k: "qkpos" }; }));
+var SHAPE = mk("shape", [
+  { d: "؟لامٌ", f: "كَلامٌ", a: "كـ", L: "ك" }, { d: "سَـ؟ـتَ", f: "سَكَتَ", a: "ـكـ", L: "ك" }, { d: "سَمَـ؟", f: "سَمَك", a: "ـك", L: "ك" },
+  { d: "أَسْما؟", f: "أَسْماك", a: "ك", L: "ك" }, { d: "؟تاب", f: "كِتاب", a: "كـ", L: "ك" }, { d: "مُـ؟ـرَّم", f: "مُكَرَّم", a: "ـكـ", L: "ك" },
+  { d: "مَلِـ؟", f: "مَلِك", a: "ـك", L: "ك" }, { d: "؟مال", f: "كَمال", a: "كـ", L: "ك" }, { d: "الْـ؟ـبيرَة", f: "الْكَبيرَة", a: "ـكـ", L: "ك" },
+  { d: "؟لَم", f: "قَلَم", a: "قـ", L: "ق" }, { d: "حَـ؟ـيبَة", f: "حَقيبَة", a: "ـقـ", L: "ق" }, { d: "دَ؟ّ", f: "دَقَّ", a: "ـق", L: "ق" }, { d: "رِفا؟", f: "رِفاق", a: "ق", L: "ق" }
+].map(function (x) { x.k = "qkpos"; return x; }));
+function bare(w) { return w.replace(/[\u064B-\u0652\u0670\u0640]/g, ""); }
+function paintLetter(w, L) { return esc(w).replace(new RegExp(L + "[\u064B-\u0652]*", "g"), function (m) { return '<span class="lq">' + m + "</span>"; }); }
 function qkPos(d) { return d.charAt(0) === "؟" ? "أَوَّلِ" : d.charAt(d.length - 1) === "؟" ? "آخِرِ" : "وَسَطِ"; }
 
 /* ================= icons ================= */
@@ -594,7 +615,7 @@ var IC = {
 };
 
 /* ================= games ================= */
-var TNAME = { mcq: "اِخْتَرِ الْجَوابَ", tf: "صَوابٌ أَمْ خَطَأٌ؟", det: "مُحَقِّقُ الْفِقْرَةِ", count: "عُدَّ الْكَلِماتِ", isit: "جُمْلَةٌ أَمْ لا؟", order: "رَتِّبِ الْجُمْلَةَ", fill: "أَكْمِلِ الْقاعِدَةَ", what: "ما هٰذا؟", build: "اِبْنِ الْكَلِمَةَ", letter: "الْحَرْفُ الْأَوَّلُ", match: "صِلْ بِخَطٍّ", qkword: "أَيُّ كَلِمَةٍ صَحيحَةٌ؟", qkletter: "ق أَمْ ك؟" };
+var TNAME = { mcq: "اِخْتَرِ الْجَوابَ", tf: "صَوابٌ أَمْ خَطَأٌ؟", det: "مُحَقِّقُ الْفِقْرَةِ", count: "عُدَّ الْكَلِماتِ", isit: "جُمْلَةٌ أَمْ لا؟", order: "رَتِّبِ الْجُمْلَةَ", fill: "أَكْمِلِ الْقاعِدَةَ", what: "ما هٰذا؟", build: "اِبْنِ الْكَلِمَةَ", letter: "الْحَرْفُ الْأَوَّلُ", match: "صِلْ بِخَطٍّ", qkword: "أَيُّ كَلِمَةٍ صَحيحَةٌ؟", qkletter: "ق أَمْ ك؟", hunt: "صَيّادُ الْحُروفِ", pos: "أَيْنَ الْحَرْفُ؟", shape: "شَكْلُ الْحَرْفِ" };
 var GAMES = [
   { id: "det", les: 1, c: "teal", icon: IC.mag, wh: "🔍", st: "🦉", desc: "اِبْحَثوا في الْفِقْرَةِ عَنِ الْكَلِماتِ وَالنِّقاطِ وَالْجُمَلِ.", items: function () { return take(DET, 7); } },
   { id: "count", les: 1, c: "violet", icon: "١٢٣", wh: "🔢", st: "🐝", desc: "اُنْقُروا عَلى الْكَلِماتِ وَعُدّوها.", items: function () { return take(COUNT, 6); } },
@@ -607,6 +628,11 @@ var GAMES = [
   { id: "letter", les: 2, c: "pink", icon: "أ", wh: "🔤", st: "🐰", desc: "بِأَيِّ حَرْفٍ تَبْدَأُ الْكَلِمَةُ؟", items: function () { return take(LETTER, 8); } },
   { id: "qkword", les: 4, c: "red", icon: "ق ك", wh: "✍️", st: "🐳", desc: "كَلِمَتانِ: واحِدَةٌ بِـ ق وَواحِدَةٌ بِـ ك. أَيُّهُما صَحيحَةٌ؟", items: function () { return take(QKWORD, 8); } },
   { id: "qkletter", les: 4, c: "orange", icon: "؟", wh: "👂", st: "🦒", desc: "أَكْمِلوا الْكَلِمَةَ بِالْحَرْفِ الْمُناسِبِ: ق أَوْ ك.", items: function () { return take(QKLETTER, 8); } },
+  { id: "hunt", les: 4, c: "violet", icon: IC.mag, wh: "🖍️", st: "🐼", desc: "اِقْرَؤوا وَلَوِّنوا: اُنْقُروا عَلى كُلِّ كَلِمَةٍ فيها ق أَوْ ك.", items: function () { return shuffle(HUNT); } },
+  { id: "pos", les: 4, c: "teal", icon: "١٢٣", wh: "📍", st: "🐨", desc: "أَيْنَ الْحَرْفُ؟ في أَوَّلِ الْكَلِمَةِ أَمْ وَسَطِها أَمْ آخِرِها؟", items: function () { return take(POSW, 8); } },
+  { id: "shape", les: 4, c: "pink", icon: "كـ", wh: "🔠", st: "🐯", desc: "اِخْتاروا شَكْلَ الْحَرْفِ الْمُناسِبَ: كـ ـكـ ـك ك", items: function () { return take(SHAPE, 8); } },
+  { id: "qkbig", les: 4, c: "sun", icon: IC.star, wh: "🎖️", st: "🐘", special: true, title: "تَحَدّي ق وَ ك", desc: "١٠ أَسْئِلَةٍ مِنْ كُلِّ أَلْعابِ الدَّرْسِ الثّالِثِ.",
+    items: function () { return [].concat(take(QKLETTER, 2), take(QKWORD, 3), take(POSW, 2), take(SHAPE, 2), take(HUNT, 1)); } },
   { id: "match", les: 3, c: "violet", icon: IC.link, wh: "🔗", st: "🐙", desc: "اِسْحَبوا خَطًّا بَيْنَ كُلِّ شَيْئَيْنِ مُتَناسِبَيْنِ.", items: matchItems },
   { id: "mcq", les: 3, c: "green", icon: "أ ب ج", wh: "🎯", st: "🦊", desc: "أَسْئِلَةٌ مِنَ الدَّرْسَيْنِ الْأَوَّلِ وَالثّاني.", items: function () { return take(MCQ, 10); } },
   { id: "big", les: 3, c: "sun", icon: IC.star, wh: "🏆", st: "🦁", special: true, title: "التَّحَدّي الْكَبيرُ", desc: "١٢ سُؤالًا مِنْ كُلِّ الدُّروسِ، مِنَ السَّهْلِ إِلى الصَّعْبِ.",
@@ -805,7 +831,7 @@ function openWheel() {
   GAMES.forEach(function (g, i) {
     var a1 = (i * seg - 90) * Math.PI / 180, a2 = ((i + 1) * seg - 90) * Math.PI / 180;
     paths += '<path d="M0 0L' + (R * Math.cos(a1)).toFixed(2) + " " + (R * Math.sin(a1)).toFixed(2) + "A" + R + " " + R + " 0 0 1 " + (R * Math.cos(a2)).toFixed(2) + " " + (R * Math.sin(a2)).toFixed(2) + 'Z" style="fill:var(--' + g.c + ');stroke:#fff;stroke-width:4"/>' +
-      '<g transform="rotate(' + (i * seg + seg / 2) + ')"><text x="0" y="-140" text-anchor="middle" dominant-baseline="central" font-size="40">' + g.wh + "</text></g>";
+      '<g transform="rotate(' + (i * seg + seg / 2) + ')"><text x="0" y="-140" text-anchor="middle" dominant-baseline="central" font-size="' + (n > 14 ? 30 : 40) + '">' + g.wh + "</text></g>";
   });
   wheelOv.innerHTML = '<div class="wbox" role="dialog" aria-label="عجلة الألعاب"><div class="whead"><h2>عَجَلَةُ الْأَلْعابِ</h2><button class="xbtn press" type="button" id="wClose" aria-label="إغلاق">✕</button></div>' +
     '<div class="wwrap"><div class="pointer"></div><svg class="wheel" id="wheel" viewBox="-206 -206 412 412" style="transform:rotate(' + wheelRot + 'deg)"><circle r="204" style="fill:var(--ink)"/>' + paths + '</svg><button class="hub press" type="button" id="wSpin">دَوِّروا!</button></div>' +
@@ -848,7 +874,7 @@ var OOPS = ["لا بَأْسَ، نَتَعَلَّمُ مَعًا!", "قَري�
 function question() {
   var g = S.game, q = S.qs[S.i], finished = false, sayText = "";
   drawTeams(); hush();
-  app.innerHTML = '<section class="stage" style="' + cv(g.c) + '"><div class="shead"><span class="gi">' + g.icon + '</span><h2 class="gtitle">' + g.title + (g.id === "big" ? "<small>" + TNAME[q.t] + "</small>" : "") + "</h2>" +
+  app.innerHTML = '<section class="stage" style="' + cv(g.c) + '"><div class="shead"><span class="gi">' + g.icon + '</span><h2 class="gtitle">' + g.title + ((g.id === "big" || g.id === "qkbig") ? "<small>" + TNAME[q.t] + "</small>" : "") + "</h2>" +
     '<button class="chipbtn sayb press" type="button" id="sayBtn"><span class="e">🔊</span> اِسْتَمِعوا</button>' +
     '<button class="chipbtn press" type="button" id="hintBtn"><span class="e">💡</span> مُساعَدَةٌ</button>' +
     (S.teamMode ? '<span class="turn t' + S.turn + '">' + TEAMS[S.turn].i + " دَوْرُ " + TEAMS[S.turn].g + "</span>" : "") +
@@ -1294,6 +1320,65 @@ R.qkletter = function (q, body, api) {
     api.done(ok ? "right" : "wrong", { ans: q.L + " ← " + q.f, why: "«" + q.f + "»: حَرْفُ " + q.L + " في " + pos + " الْكَلِمَةِ." });
   }
   btns.forEach(function (b) { tap(b, function () { choose(b); }); dragify(b, function (t) { if (t.closest(".pic")) choose(b); }); });
+};
+
+R.hunt = function (q, body, api) {
+  var words = q.p.split(" "), need = 0, found = 0, m = 0;
+  api.say("اُنْقُروا عَلى كُلِّ كَلِمَةٍ فيها حَرْفُ " + q.L);
+  words.forEach(function (w) { if (bare(w).indexOf(q.L) > -1) need++; });
+  body.innerHTML = '<p class="q">اُنْقُروا عَلى كُلِّ كَلِمَةٍ فيها حَرْفُ <span class="lq big">' + q.L + "</span></p>" +
+    '<div class="para"><span class="ptag">' + q.tag + "</span>" + words.map(function (w, i) { return '<button class="tk" type="button" data-i="' + i + '">' + esc(w) + "</button>"; }).join("") + "</div>" +
+    '<p class="hint">وَجَدْتُمْ: <b class="counter">' + ar(0) + "</b> مِنْ " + ar(need) + "</p>";
+  var tks = all(".tk", body), cnt = body.querySelector(".counter");
+  function has(t) { return bare(words[+t.dataset.i]).indexOf(q.L) > -1; }
+  api.onHint = function () { var t = tks.filter(function (x) { return has(x) && !x.classList.contains("ok"); })[0]; if (t) { t.style.borderColor = "var(--sun)"; shake(t); } };
+  tks.forEach(function (t) {
+    t.onclick = function () {
+      if (t.classList.contains("ok")) return;
+      if (has(t)) {
+        t.classList.add("ok", "pop"); t.innerHTML = paintLetter(words[+t.dataset.i], q.L); found++; cnt.textContent = ar(found); api.tick(500 + found * 70);
+        if (found === need) { tks.forEach(function (x) { x.disabled = true; }); api.done(m ? "partial" : "right", { m: m, why: "في الْفِقْرَةِ " + ar(need) + " كَلِماتٍ فيها حَرْفُ " + q.L + "." }); }
+      } else { m++; api.oops(t); }
+    };
+  });
+};
+
+R.pos = function (q, body, api) {
+  var b = bare(q.w), i = b.indexOf(q.L), ans = i === 0 ? 0 : i === b.length - 1 ? 2 : 1, done = false;
+  var names = ["في أَوَّلِ الْكَلِمَةِ", "في وَسَطِ الْكَلِمَةِ", "في آخِرِ الْكَلِمَةِ"];
+  api.say("أَيْنَ حَرْفُ " + q.L + " في كَلِمَةِ " + q.w + "؟");
+  body.innerHTML = '<p class="q">أَيْنَ حَرْفُ <span class="lq big">' + q.L + '</span> في هٰذِهِ الْكَلِمَةِ؟</p><p class="thing w"><span>' + paintLetter(q.w, q.L) + "</span></p>" +
+    '<div class="opts">' + names.map(function (n, k) { return '<button class="opt press" type="button" data-k="' + k + '">' + n + "</button>"; }).join("") + "</div>";
+  var btns = all(".opt", body);
+  api.onHint = function () { fadeOneWrong(btns, function (x) { return +x.dataset.k === ans; }); };
+  btns.forEach(function (x) {
+    x.onclick = function () {
+      if (done) return; done = true;
+      var ok = +x.dataset.k === ans;
+      btns.forEach(function (y) { y.disabled = true; if (+y.dataset.k === ans) y.classList.add("ok"); });
+      if (!ok) { x.classList.add("no"); shake(x); }
+      api.done(ok ? "right" : "wrong", { ans: names[ans], why: "«" + q.w + "»: " + b.split("").join(" – ") + ". حَرْفُ " + q.L + " " + names[ans] + "." });
+    };
+  });
+};
+
+R.shape = function (q, body, api) {
+  var forms = q.L === "ك" ? ["كـ", "ـكـ", "ـك", "ك"] : ["قـ", "ـقـ", "ـق", "ق"], done = false;
+  api.say("اِخْتاروا شَكْلَ الْحَرْفِ: " + q.f);
+  body.innerHTML = '<p class="q">اِخْتاروا شَكْلَ حَرْفِ <span class="lq big">' + q.L + '</span> الْمُناسِبَ لِلْكَلِمَةِ.</p>' +
+    '<div class="pic dz"><span class="word qkd">' + esc(q.d).replace("؟", '<span class="gapq">؟</span>') + "</span></div>" +
+    '<div class="opts">' + forms.map(function (f) { return '<button class="opt big press" type="button" data-f="' + f + '">' + f + "</button>"; }).join("") + "</div>";
+  var btns = all(".opt", body);
+  api.onHint = function () { fadeOneWrong(btns, function (x) { return x.dataset.f === q.a; }); };
+  function choose(x) {
+    if (done) return; done = true;
+    var ok = x.dataset.f === q.a;
+    btns.forEach(function (y) { y.disabled = true; y.classList.remove("drag"); if (y.dataset.f === q.a) y.classList.add("ok"); });
+    body.querySelector(".qkd").innerHTML = paintLetter(q.f, q.L);
+    if (!ok) { x.classList.add("no"); shake(x); }
+    api.done(ok ? "right" : "wrong", { ans: q.a + " ← " + q.f, why: "في «" + q.f + "» نَكْتُبُ الْحَرْفَ هٰكَذا: " + q.a });
+  }
+  btns.forEach(function (x) { tap(x, function () { choose(x); }); dragify(x, function (t) { if (t.closest(".pic")) choose(x); }); });
 };
 
 var PAIRCOLS = ["#d9508a", "#178a9c", "#ef8a2b", "#25a064"];
