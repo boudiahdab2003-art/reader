@@ -253,6 +253,8 @@ button:focus-visible{outline:4px solid var(--sun);outline-offset:3px}
 .pic .emo{font-size:clamp(5rem,12vw,8.5rem)}
 .pic .word{font-family:var(--txt);font-weight:700;font-size:clamp(2.2rem,5vw,3.6rem)}
 
+.qkw{font-size:clamp(2.2rem,5vw,3.6rem)}
+.gapq{color:var(--red);background:var(--red-s);border-radius:12px;padding:0 8px}
 /* match */
 .match{position:relative;display:grid;grid-template-columns:1fr 1fr;column-gap:clamp(56px,13vw,200px);row-gap:14px}
 .match svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible;z-index:2}
@@ -407,6 +409,7 @@ var SK = {
   word:  { n: "الْكَلِمَةُ وَأَحْرُفُها", r: "تَتَأَلَّفُ الْكَلِمَةُ مِنْ أَحْرُفٍ، مِثْلُ: سَميرٌ = س + م + ي + ر." },
   abc:   { n: "الْحُروفُ الْهِجائِيَّةُ", r: "نَنْظُرُ إِلى أَوَّلِ حَرْفٍ في الْكَلِمَةِ: تُفّاحَة تَبْدَأُ بِـ ت." },
   rules: { n: "مِمَّ يَتَأَلَّفُ كُلُّ شَيْءٍ؟", r: "الْفِقْرَةُ ← جُمَلٌ، الْجُمْلَةُ ← كَلِماتٌ، الْكَلِمَةُ ← أَحْرُفٌ." },
+  qk:    { n: "ق أَمْ ك؟", r: "ق وَ ك مُتَقارِبانِ في النُّطْقِ: نَسْمَعُ جَيِّدًا وَنَكْتُبُ: قَلَم، حَقيبَة، رِفاق – كِتاب، سَمَك، كَلام." },
   read:  { n: "فَهْمُ الْفِقْرَةِ", r: "نَقْرَأُ الْفِقْرَةَ بِانْتِباهٍ قَبْلَ أَنْ نُجيبَ." }
 };
 
@@ -549,6 +552,33 @@ function matchItems() {
   return r;
 }
 
+/* lesson 3 (إملاء, pages 100–101): the two letters that sound alike, ق and ك */
+var QKWORD = mk("qkword", [
+  { c: "قَلَم", w: "كَلَم", e: "✏️", L: "ق" },
+  { c: "حَقيبَة", w: "حَكيبَة", e: "🎒", L: "ق" },
+  { c: "سَمَكَة", w: "سَمَقَة", e: "🐟", L: "ك" },
+  { c: "كِتاب", w: "قِتاب", e: "📖", L: "ك" },
+  { c: "أَسْماك", w: "أَسْماق", e: "🐠", L: "ك" },
+  { c: "كَلام", w: "قَلام", e: "💬", L: "ك" },
+  { s: "كَمْ أَنا مُشْتاقَةٌ إِلى رُؤْيَةِ _ الصِّغارِ.", c: "الرِّفاقِ", w: "الرِّفاكِ", L: "ق" },
+  { s: "حَمَلَ _ حَقيبَتَهُ.", c: "كَمالٌ", w: "قَمالٌ", L: "ك" },
+  { s: "جَلَسَ كَمالٌ عَلى _.", c: "الْمَقْعَدِ", w: "الْمَكْعَدِ", e: "🪑", L: "ق" },
+  { s: "لَقَدْ مَرَّ _ طَويلٌ.", c: "وَقْتٌ", w: "وَكْتٌ", e: "⏰", L: "ق" },
+  { s: "قالَتِ الشَّجَرَةُ _ بِرِفْقٍ.", c: "الْكَبيرَةُ", w: "الْقَبيرَةُ", e: "🌳", L: "ك" },
+  { s: "_ مَوْعِدُ الذَّهابِ إِلى الْمَدْرَسَةِ.", c: "اِقْتَرَبَ", w: "اِكْتَرَبَ", L: "ق" },
+  { s: "كَمْ أَنا _ إِلى رُؤْيَةِ الرِّفاقِ.", c: "مُشْتاقَةٌ", w: "مُشْتاكَةٌ", L: "ق" },
+  { s: "حَمَلَ كَمالٌ حَقيبَتَهُ وَرافَقَ _.", c: "رَفيقَهُ", w: "رَفيكَهُ", L: "ق" },
+  { s: "جَلَسَ كَمالٌ قُرْبَ _ وَمَلَك.", c: "طارِق", w: "طارِك", L: "ق" }
+].map(function (x) { x.k = "qk"; return x; }));
+var QKLETTER = mk("qkletter", [
+  { d: "رِفا؟", f: "رِفاق", L: "ق", e: "🧒" }, { d: "حَـ؟ـيبَة", f: "حَقيبَة", L: "ق", e: "🎒" }, { d: "؟ـلَم", f: "قَلَم", L: "ق", e: "✏️" },
+  { d: "؟ـلامٌ", f: "كَلامٌ", L: "ك", e: "💬" }, { d: "سَـ؟ـتَ", f: "سَكَتَ", L: "ك", e: "🤫" }, { d: "سَمَـ؟", f: "سَمَك", L: "ك", e: "🐟" },
+  { d: "أَسْما؟", f: "أَسْماك", L: "ك", e: "🐠" }, { d: "؟ـتاب", f: "كِتاب", L: "ك", e: "📖" }, { d: "مَلِـ؟", f: "مَلِك", L: "ك", e: "👑" },
+  { d: "الْمَـ؟ـعَد", f: "الْمَقْعَد", L: "ق", e: "🪑" }, { d: "طارِ؟", f: "طارِق", L: "ق", e: "👦" }, { d: "وَ؟ـت", f: "وَقْت", L: "ق", e: "⏰" },
+  { d: "؟ـمال", f: "كَمال", L: "ك", e: "🎒" }
+].map(function (x) { x.k = "qk"; return x; }));
+function qkPos(d) { return d.charAt(0) === "؟" ? "أَوَّلِ" : d.charAt(d.length - 1) === "؟" ? "آخِرِ" : "وَسَطِ"; }
+
 /* ================= icons ================= */
 function svg(p) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">' + p + "</svg>"; }
 var IC = {
@@ -564,7 +594,7 @@ var IC = {
 };
 
 /* ================= games ================= */
-var TNAME = { mcq: "اِخْتَرِ الْجَوابَ", tf: "صَوابٌ أَمْ خَطَأٌ؟", det: "مُحَقِّقُ الْفِقْرَةِ", count: "عُدَّ الْكَلِماتِ", isit: "جُمْلَةٌ أَمْ لا؟", order: "رَتِّبِ الْجُمْلَةَ", fill: "أَكْمِلِ الْقاعِدَةَ", what: "ما هٰذا؟", build: "اِبْنِ الْكَلِمَةَ", letter: "الْحَرْفُ الْأَوَّلُ", match: "صِلْ بِخَطٍّ" };
+var TNAME = { mcq: "اِخْتَرِ الْجَوابَ", tf: "صَوابٌ أَمْ خَطَأٌ؟", det: "مُحَقِّقُ الْفِقْرَةِ", count: "عُدَّ الْكَلِماتِ", isit: "جُمْلَةٌ أَمْ لا؟", order: "رَتِّبِ الْجُمْلَةَ", fill: "أَكْمِلِ الْقاعِدَةَ", what: "ما هٰذا؟", build: "اِبْنِ الْكَلِمَةَ", letter: "الْحَرْفُ الْأَوَّلُ", match: "صِلْ بِخَطٍّ", qkword: "أَيُّ كَلِمَةٍ صَحيحَةٌ؟", qkletter: "ق أَمْ ك؟" };
 var GAMES = [
   { id: "det", les: 1, c: "teal", icon: IC.mag, wh: "🔍", st: "🦉", desc: "اِبْحَثوا في الْفِقْرَةِ عَنِ الْكَلِماتِ وَالنِّقاطِ وَالْجُمَلِ.", items: function () { return take(DET, 7); } },
   { id: "count", les: 1, c: "violet", icon: "١٢٣", wh: "🔢", st: "🐝", desc: "اُنْقُروا عَلى الْكَلِماتِ وَعُدّوها.", items: function () { return take(COUNT, 6); } },
@@ -575,17 +605,20 @@ var GAMES = [
   { id: "what", les: 2, c: "teal", icon: "؟", wh: "❓", st: "🐱", desc: "حَرْفٌ أَمْ كَلِمَةٌ أَمْ جُمْلَةٌ أَمْ فِقْرَةٌ؟", items: function () { return whatItems(2); } },
   { id: "build", les: 2, c: "orange", icon: IC.blocks, wh: "🧱", st: "🐻", desc: "رَكِّبوا الْكَلِمَةَ مِنْ أَحْرُفِها.", items: function () { return take(BUILD, 6); } },
   { id: "letter", les: 2, c: "pink", icon: "أ", wh: "🔤", st: "🐰", desc: "بِأَيِّ حَرْفٍ تَبْدَأُ الْكَلِمَةُ؟", items: function () { return take(LETTER, 8); } },
+  { id: "qkword", les: 4, c: "red", icon: "ق ك", wh: "✍️", st: "🐳", desc: "كَلِمَتانِ: واحِدَةٌ بِـ ق وَواحِدَةٌ بِـ ك. أَيُّهُما صَحيحَةٌ؟", items: function () { return take(QKWORD, 8); } },
+  { id: "qkletter", les: 4, c: "orange", icon: "؟", wh: "👂", st: "🦒", desc: "أَكْمِلوا الْكَلِمَةَ بِالْحَرْفِ الْمُناسِبِ: ق أَوْ ك.", items: function () { return take(QKLETTER, 8); } },
   { id: "match", les: 3, c: "violet", icon: IC.link, wh: "🔗", st: "🐙", desc: "اِسْحَبوا خَطًّا بَيْنَ كُلِّ شَيْئَيْنِ مُتَناسِبَيْنِ.", items: matchItems },
-  { id: "mcq", les: 3, c: "green", icon: "أ ب ج", wh: "🎯", st: "🦊", desc: "أَسْئِلَةٌ مِنَ الدَّرْسَيْنِ وَمِنَ الْفِقْرَتَيْنِ.", items: function () { return take(MCQ, 10); } },
-  { id: "big", les: 3, c: "sun", icon: IC.star, wh: "🏆", st: "🦁", special: true, title: "التَّحَدّي الْكَبيرُ", desc: "١٢ سُؤالًا مِنْ كُلِّ الْأَلْعابِ، مِنَ السَّهْلِ إِلى الصَّعْبِ.",
-    items: function () { return [].concat(take(LETTER, 1), whatItems(1).slice(0, 2), take(TF, 1), take(isitItems(), 1), take(MCQ, 2), take(COUNT, 1), take(FILL, 1), take(DET, 1), take(BUILD, 1), take(ORDER, 1)); } }
+  { id: "mcq", les: 3, c: "green", icon: "أ ب ج", wh: "🎯", st: "🦊", desc: "أَسْئِلَةٌ مِنَ الدَّرْسَيْنِ الْأَوَّلِ وَالثّاني.", items: function () { return take(MCQ, 10); } },
+  { id: "big", les: 3, c: "sun", icon: IC.star, wh: "🏆", st: "🦁", special: true, title: "التَّحَدّي الْكَبيرُ", desc: "١٢ سُؤالًا مِنْ كُلِّ الدُّروسِ، مِنَ السَّهْلِ إِلى الصَّعْبِ.",
+    items: function () { return [].concat(take(LETTER, 1), whatItems(1).slice(0, 2), take(TF, 1), take(isitItems(), 1), take(MCQ, 1), take(QKWORD, 1), take(COUNT, 1), take(FILL, 1), take(DET, 1), take(BUILD, 1), take(ORDER, 1)); } }
 ];
 GAMES.forEach(function (g) { if (!g.title) g.title = TNAME[g.id]; });
 function gameById(id) { return GAMES.filter(function (g) { return g.id === id; })[0]; }
 var LES = {
   1: { n: "١", c: "teal", t: "الدَّرْسُ الْأَوَّلُ: الْفِقْرَةُ وَالْجُمْلَةُ وَالْكَلِمَةُ" },
   2: { n: "٢", c: "pink", t: "الدَّرْسُ الثّاني: الْكَلِمَةُ وَالْحُروفُ الْهِجائِيَّةُ" },
-  3: { n: "★", c: "sun", t: "مُراجَعَةُ الدَّرْسَيْنِ" }
+  4: { n: "٣", c: "red", t: "الدَّرْسُ الثّالِثُ – إِمْلاءٌ: الْحَرْفانِ الْمُتَقارِبانِ في النُّطْقِ: ق – ك" },
+  3: { n: "★", c: "sun", t: "مُراجَعَةُ الدُّروسِ" }
 };
 
 /* ================= state ================= */
@@ -729,7 +762,7 @@ function starRow(n) { var s = ""; for (var i = 0; i < 3; i++) s += '<span class=
 function home() {
   S.game = null; drawTeams(); closeWheel(); hush();
   var got = GAMES.filter(function (g) { return S.stickers[g.id]; }).length;
-  var sections = [1, 2, 3].map(function (l) {
+  var sections = [1, 2, 4, 3].map(function (l) {
     return '<section class="sec"><h2 class="sech"><span class="lnum" style="' + cv(LES[l].c) + '">' + LES[l].n + "</span>" + LES[l].t + '</h2><div class="grid">' +
       GAMES.filter(function (g) { return g.les === l; }).map(function (g) {
         var r = S.last[g.id];
@@ -753,7 +786,7 @@ function home() {
     '<div class="lv" style="' + cv("orange") + '"><b>الْجُمَلُ</b><span>اِنْتَهَتِ الْعُطْلَةُ الصَّيْفِيَّةُ.</span></div><div class="arr">تَتَأَلَّفُ<br>مِنْ ←</div>' +
     '<div class="lv" style="' + cv("green") + '"><b>الْكَلِماتُ</b><span>سَميرٌ</span></div><div class="arr">تَتَأَلَّفُ<br>مِنْ ←</div>' +
     '<div class="lv" style="' + cv("teal") + '"><b>الْأَحْرُفُ</b><span>س – م – ي – ر</span></div></div>' +
-    "<ul><li>تَتَأَلَّفُ الْفِقْرَةُ مِنْ جُمَلٍ.</li><li>تَتَأَلَّفُ الْجُمْلَةُ مِنْ كَلِماتٍ.</li><li>تَتَأَلَّفُ الْكَلِمَةُ مِنْ أَحْرُفٍ.</li><li>نُسَمّي مَجْموعَةَ الْكَلِماتِ جُمْلَةً حينَ تُفيدُ مَعْنًى تامًّا.</li><li>تَنْتَهي الْجُمْلَةُ عادَةً بِنُقْطَةٍ.</li></ul></section>";
+    "<ul><li>تَتَأَلَّفُ الْفِقْرَةُ مِنْ جُمَلٍ.</li><li>تَتَأَلَّفُ الْجُمْلَةُ مِنْ كَلِماتٍ.</li><li>تَتَأَلَّفُ الْكَلِمَةُ مِنْ أَحْرُفٍ.</li><li>نُسَمّي مَجْموعَةَ الْكَلِماتِ جُمْلَةً حينَ تُفيدُ مَعْنًى تامًّا.</li><li>تَنْتَهي الْجُمْلَةُ عادَةً بِنُقْطَةٍ.</li><li>ق وَ ك حَرْفانِ مُتَقارِبانِ في النُّطْقِ: نَسْمَعُ جَيِّدًا ثُمَّ نَكْتُبُ: قَلَم، حَقيبَة – كِتاب، سَمَك.</li></ul></section>";
   app.querySelector("#teamToggle").onchange = function (e) { S.teamMode = e.target.checked; store.set("teamMode", S.teamMode); };
   app.querySelector("#spinOpen").onclick = openWheel;
   var cb = app.querySelector("#clearBtn");
@@ -1222,6 +1255,45 @@ R.letter = function (q, body, api) {
     tap(b, function () { choose(b); });
     dragify(b, function (t) { if (t.closest(".pic")) choose(b); });
   });
+};
+
+R.qkword = function (q, body, api) {
+  var opts = shuffle([q.c, q.w]), done = false;
+  api.say("أَيُّ كَلِمَةٍ مَكْتوبَةٌ صَحيحًا؟ " + (q.s ? q.s.replace("_", "...") : "") + " " + opts.join(" أَمْ "));
+  var show = q.s
+    ? '<p class="rule dz">' + (q.e ? '<span class="emo" style="margin-inline-end:12px">' + q.e + "</span>" : "") + dots(q.s.split("_")[0]) + '<span class="blank now"></span>' + dots(q.s.split("_")[1]) + "</p>"
+    : '<div class="pic dz"><span class="emo" aria-hidden="true">' + q.e + "</span></div>";
+  body.innerHTML = '<p class="q">أَيُّ كَلِمَةٍ مَكْتوبَةٌ صَحيحًا؟ اِسْحَبوها أَوِ اُنْقُروا عَلَيْها.</p>' + show + '<div class="opts">' +
+    opts.map(function (o) { return '<button class="opt big qkw press" type="button">' + o + "</button>"; }).join("") + "</div>";
+  var btns = all(".opt", body);
+  api.onHint = function () { var c = btns.filter(function (b) { return b.textContent === q.c; })[0]; c.classList.add("pop"); c.style.borderColor = "var(--green)"; };
+  function choose(b) {
+    if (done) return; done = true;
+    var ok = b.textContent === q.c;
+    btns.forEach(function (x) { x.disabled = true; x.classList.remove("drag"); if (x.textContent === q.c) x.classList.add("ok"); });
+    var bl = body.querySelector(".blank"); if (bl) { bl.textContent = q.c; bl.classList.remove("now"); bl.classList.add("filled"); }
+    if (!ok) { b.classList.add("no"); shake(b); }
+    api.done(ok ? "right" : "wrong", { ans: q.c, why: "«" + q.c + "» تُكْتَبُ بِحَرْفِ " + q.L + "، وَ«" + q.w + "» خَطَأٌ." });
+  }
+  btns.forEach(function (b) { tap(b, function () { choose(b); }); dragify(b, function (t) { if (t.closest(".dz")) choose(b); }); });
+};
+
+R.qkletter = function (q, body, api) {
+  var done = false, pos = qkPos(q.d);
+  api.say("أَكْمِلوا الْكَلِمَةَ: " + q.f);
+  body.innerHTML = '<p class="q">أَيُّ حَرْفٍ يَنْقُصُ؟ اِسْحَبوا الْحَرْفَ إِلى الْكَلِمَةِ أَوِ اُنْقُروا عَلَيْهِ.</p>' +
+    '<div class="pic dz"><span class="emo" aria-hidden="true">' + q.e + '</span><span class="word qkd">' + esc(q.d).replace("؟", '<span class="gapq">؟</span>') + "</span></div>" +
+    '<div class="opts">' + shuffle(["ق", "ك"]).map(function (l) { return '<button class="opt big press" type="button" data-l="' + l + '">' + l + "</button>"; }).join("") + "</div>";
+  var btns = all(".opt", body);
+  function choose(b) {
+    if (done) return; done = true;
+    var ok = b.dataset.l === q.L;
+    btns.forEach(function (x) { x.disabled = true; x.classList.remove("drag"); if (x.dataset.l === q.L) x.classList.add("ok"); });
+    body.querySelector(".qkd").textContent = q.f;
+    if (!ok) { b.classList.add("no"); shake(b); }
+    api.done(ok ? "right" : "wrong", { ans: q.L + " ← " + q.f, why: "«" + q.f + "»: حَرْفُ " + q.L + " في " + pos + " الْكَلِمَةِ." });
+  }
+  btns.forEach(function (b) { tap(b, function () { choose(b); }); dragify(b, function (t) { if (t.closest(".pic")) choose(b); }); });
 };
 
 var PAIRCOLS = ["#d9508a", "#178a9c", "#ef8a2b", "#25a064"];
