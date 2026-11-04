@@ -317,11 +317,14 @@ button:focus-visible{outline:4px solid var(--sun);outline-offset:3px}
 .tile.no{background:var(--red-s)!important;border-color:var(--red)!important}
 /* story puzzle: pieces stack in numbered rows */
 .slots.vert{flex-direction:column;align-items:stretch;flex-wrap:nowrap}
-.slots.vert .slot{display:flex;align-items:center;gap:12px;width:100%;min-height:70px;padding:6px 10px;border-color:var(--orange);text-align:start}
+.puz{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+.slots.vert{min-height:0;padding:10px}
+.slots.vert .slot{display:flex;align-items:center;gap:12px;width:100%;min-height:58px;padding:6px 10px;border-color:var(--orange);text-align:start}
 .slots.vert .slot.f{border-color:transparent;padding:0}
 .sn{flex:none;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:var(--orange);color:#fff;font-family:var(--ui);font-weight:800;font-size:1.5rem}
 .vert .tile{flex:1 1 auto;width:100%;text-align:start;font-size:1.75rem;font-size:clamp(1.15rem,2.2vw,1.75rem);line-height:1.9;padding:6px 18px}
-.bank.vert{flex-direction:column;align-items:stretch}
+.bank.vert{flex-direction:column;align-items:stretch;background:var(--orange-s);min-height:120px;padding:10px}
+@media (max-width:900px){.puz{grid-template-columns:1fr}}
 .storybox{background:var(--card);border-radius:24px;padding:12px 20px;box-shadow:0 6px 0 var(--line)}
 .storybox summary{cursor:pointer;font-weight:800;font-size:1.4rem;color:var(--orange-d)}
 .storybox h3{margin:10px 0 0;text-align:center;font-size:1.8rem;color:var(--teal-d)}
@@ -877,13 +880,16 @@ PTXT.d1 = RD[0]; PTXT.d2 = RD[1]; PTXT.d3 = RD[2];
 PNAME.d1 = "الْفِقْرَةُ الْأولى"; PNAME.d2 = "الْفِقْرَةُ الثّانِيَةُ"; PNAME.d3 = "الْفِقْرَةُ الثّالِثَةُ";
 /* the puzzle: put the pieces of the story in order */
 var STORY = mk("order", [
-  { parts: RD, prompt: "يَتَأَلَّفُ النَّصُّ مِنْ ثَلاثِ فِقْراتٍ. رَتِّبوا الْفِقْراتِ: الْبِدايَةُ، ثُمَّ الْوَسَطُ، ثُمَّ النِّهايَةُ.", why: "الْبِدايَةُ: سَمِعَ طارِقٌ أَصْواتًا غَريبَةً. الْوَسَطُ: الدّيكُ وَالثَّعْلَبُ. النِّهايَةُ: هَدَأَ الْخُمُّ." },
-  { parts: ["سَمِعَ طارِقٌ أَصْواتًا غَريبَةً تَصْدُرُ مِنْ خُمِّ الدَّجاجِ.", "حَمَلَ طارِقٌ الْعَصا وَالْمِصْباحَ الْكَهْرَبائِيَّ وَخَرَجَ إِلى الْخُمِّ.", "اَلدّيكُ يَقْفِزُ عَلى ثَعْلَبٍ.", "ضَرَبَ طارِقٌ الثَّعْلَبَ بِالْعَصا فَهَرَبَ في الْحالِ.", "هَدَأَ الْخُمُّ وَراحَتِ الدَّجاجاتُ تَحومُ حَوْلَ الدّيكِ."],
-    prompt: "ماذا حَدَثَ أَوَّلًا؟ رَتِّبوا أَحْداثَ الْقِصَّةِ.", why: "هٰكَذا حَدَثَتِ الْقِصَّةُ مِنْ أَوَّلِها إِلى آخِرِها." },
-  { parts: ["اَلدّيكُ يَقْفِزُ عَلى ثَعْلَبٍ.", "يَنْقُرُهُ.", "ثُمَّ يَهْرُبُ.", "ثُمَّ يَعودُ ثانِيَةً وَثالِثَةً."],
-    prompt: "ماذا فَعَلَ الدّيكُ الشُّجاعُ؟ رَتِّبوا ما فَعَلَهُ.", why: "«اَلدّيكُ يَقْفِزُ عَلى ثَعْلَبٍ. يَنْقُرُهُ ثُمَّ يَهْرُبُ. ثُمَّ يَعودُ ثانِيَةً وَثالِثَةً.»" },
-  { parts: ["حَمَلَ طارِقٌ الْعَصا وَالْمِصْباحَ.", "خَرَجَ إِلى الْخُمِّ لِيَرى ما يَجْري.", "ضَرَبَ الثَّعْلَبَ بِالْعَصا."],
-    prompt: "ماذا فَعَلَ طارِقٌ؟ رَتِّبوا ما فَعَلَهُ.", why: "حَمَلَ طارِقٌ الْعَصا وَالْمِصْباحَ، ثُمَّ خَرَجَ إِلى الْخُمِّ، ثُمَّ ضَرَبَ الثَّعْلَبَ فَهَرَبَ." }
+  { parts: ["في إِحْدى اللَّيالي،", "سَمِعَ طارِقٌ أَصْواتًا غَريبَةً", "تَصْدُرُ مِنْ خُمِّ الدَّجاجِ.", "كانَتْ هٰذِهِ الْأَصْواتُ صُراخًا", "يُشْبِهُ نَقيقَ الدَّجاجِ", "مَمْزوجًا بِصِياحِ الدّيكِ", "وَبِعُواءِ حَيَوانٍ مُتَوَحِّشٍ."],
+    prompt: "الْفِقْرَةُ الْأولى: رَتِّبوا قِطَعَ اللُّغْزِ.", why: "«" + RD[0] + "»" },
+  { parts: ["حَمَلَ طارِقٌ الْعَصا وَالْمِصْباحَ الْكَهْرَبائِيَّ", "وَخَرَجَ إِلى الْخُمِّ لِيَرى ما يَجْري.", "يا لَهُ مِنْ مَنْظَرٍ مُؤَثِّرٍ!", "اَلدّيكُ يَقْفِزُ عَلى ثَعْلَبٍ.", "يَنْقُرُهُ ثُمَّ يَهْرُبُ.", "ثُمَّ يَعودُ ثانِيَةً وَثالِثَةً."],
+    prompt: "الْفِقْرَةُ الثّانِيَةُ (١): رَتِّبوا قِطَعَ اللُّغْزِ.", why: "طارِقٌ يَخْرُجُ إِلى الْخُمِّ، وَالدّيكُ الشُّجاعُ يُحارِبُ الثَّعْلَبَ." },
+  { parts: ["وَالدَّجاجاتُ تَجَمَّعَتْ في آخِرِ الْخُمِّ خائِفَةً.", "كانَتْ تَحْمي الصّيصانَ تَحْتَ أَجْنِحَتِها", "وَتَصْرُخُ صُراخًا غَريبًا.", "ضَرَبَ طارِقٌ الثَّعْلَبَ بِالْعَصا", "فَهَرَبَ في الْحالِ."],
+    prompt: "الْفِقْرَةُ الثّانِيَةُ (٢): رَتِّبوا قِطَعَ اللُّغْزِ.", why: "الدَّجاجاتُ خائِفَةٌ تَحْمي الصّيصانَ، ثُمَّ ضَرَبَ طارِقٌ الثَّعْلَبَ فَهَرَبَ." },
+  { parts: ["هَدَأَ الْخُمُّ", "وَراحَتِ الدَّجاجاتُ تَحومُ حَوْلَ الدّيكِ", "كَأَنَّها تَشْكُرُهُ."],
+    prompt: "الْفِقْرَةُ الثّالِثَةُ: رَتِّبوا قِطَعَ اللُّغْزِ.", why: "«" + RD[2] + "»" },
+  { parts: ["سَمِعَ طارِقٌ أَصْواتًا غَريبَةً.", "خَرَجَ طارِقٌ إِلى الْخُمِّ.", "اَلدّيكُ يَقْفِزُ عَلى ثَعْلَبٍ.", "ضَرَبَ طارِقٌ الثَّعْلَبَ فَهَرَبَ.", "هَدَأَ الْخُمُّ."],
+    prompt: "الْقِصَّةُ كُلُّها: ماذا حَدَثَ أَوَّلًا؟ رَتِّبوا الْأَحْداثَ.", why: "هٰكَذا حَدَثَتِ الْقِصَّةُ: الْبِدايَةُ ثُمَّ الْوَسَطُ ثُمَّ النِّهايَةُ." }
 ].map(function (x) { x.k = "txtseq"; return x; }));
 var TXTORDER = mk("order", [
   { s: "سَمِعَ طارِقٌ أَصْواتًا غَريبَةً", alt: ["طارِقٌ سَمِعَ أَصْواتًا غَريبَةً"] },
@@ -974,7 +980,7 @@ var GAMES = [
   { id: "conv", les: 5, c: "orange", icon: IC.swap, wh: "🔄", st: "🦀", desc: "أُحَوِّلُ مِنَ الْمُذَكَّرِ إِلى الْمُؤَنَّثِ وَبِالْعَكْسِ، وَأُغَيِّرُ ما يَلْزَمُ.", items: function () { return take(CONV, 6); } },
   { id: "mfbig", les: 5, c: "sun", icon: IC.star, wh: "🏅", st: "🐊", special: true, title: "تَحَدّي الْمُذَكَّرِ وَالْمُؤَنَّثِ", desc: "١٠ أَسْئِلَةٍ مِنْ كُلِّ أَلْعابِ الدَّرْسِ، مِنَ السَّهْلِ إِلى الصَّعْبِ.",
     items: function () { return [].concat(genItems(1), hdhItems(1), sortItems().slice(0, 2), whoItems(2), take(CONV, 2)); } },
-  { id: "story", les: 6, c: "orange", icon: "١٢٣", wh: "🎲", st: "🐓", title: "رَتِّبِ الْقِصَّةَ", desc: "لُغْزُ الْقِصَّةِ: اِسْحَبوا قِطَعَ «الدّيكُ الشُّجاعُ» وَرَتِّبوها.", items: function () { return STORY.slice(); } },
+  { id: "story", les: 6, c: "orange", icon: "١٢٣", wh: "🎲", st: "🐓", title: "رَتِّبِ الْقِصَّةَ", desc: "لُغْزُ الْقِصَّةِ: قِطَعٌ قَصيرَةٌ مِنْ «الدّيكُ الشُّجاعُ»، فِقْرَةً فِقْرَةً، ثُمَّ الْقِصَّةُ كُلُّها.", items: function () { return STORY.slice(); } },
   { id: "txtorder", les: 6, c: "teal", icon: IC.swap, wh: "🔀", st: "🐁", title: "رَتِّبْ جُمَلَ النَّصِّ", desc: "كَلِماتٌ مِنَ النَّصِّ: رَتِّبوها لِتَصيرَ جُمْلَةً.", items: function () { return take(TXTORDER, 5); } },
   { id: "txtmean", les: 6, c: "violet", icon: IC.link, wh: "📚", st: "🐥", title: "صِلِ الْكَلِمَةَ بِمَعْناها", desc: "الْخُمُّ؟ النَّقيقُ؟ تَحومُ؟ صِلوا كُلَّ كَلِمَةٍ بِمَعْناها.", items: txtwItems },
   { id: "txtq", les: 6, c: "green", icon: "؟", wh: "🦊", st: "🐇", title: "فَهْمُ النَّصِّ", desc: "صَوابٌ أَمْ خَطَأٌ؟ وَأَسْئِلَةٌ عَنْ طارِقٍ وَالدّيكِ وَالثَّعْلَبِ.", items: txtqItems }
@@ -1500,7 +1506,7 @@ R.order = function (q, body, api) {
   var slots = words.map(function () { return null; }), m = 0, locked = false;
   api.say(vert ? q.prompt : "رَتِّبوا الْكَلِماتِ: " + bank.map(function (i) { return words[i]; }).join("، "));
   body.innerHTML = vert
-    ? '<p class="q">' + q.prompt + '</p><div class="slots vert"></div><div class="bank vert dz"></div><p class="hint">اِسْحَبوا الْقِطْعَةَ إِلى رَقْمِها، أَوِ اُنْقُروا عَلَيْها.</p>'
+    ? '<p class="q">' + q.prompt + '</p><div class="puz"><div class="slots vert"></div><div class="bank vert dz"></div></div><p class="hint">اِسْحَبوا الْقِطْعَةَ إِلى رَقْمِها، أَوِ اُنْقُروا عَلَيْها.</p>'
     : '<p class="q">رَتِّبوا الْكَلِماتِ لِتَصيرَ جُمْلَةً تُفيدُ مَعْنًى تامًّا.</p><div class="slots"></div><div class="bank dz"></div><p class="hint">اِسْحَبوا الْكَلِمَةَ إِلى مَكانِها، أَوِ اُنْقُروا عَلَيْها.</p>';
   var slotsEl = body.querySelector(".slots"), bankEl = body.querySelector(".bank");
   function full() { return slots.indexOf(null) === -1; }
