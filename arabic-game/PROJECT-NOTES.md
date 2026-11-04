@@ -70,6 +70,10 @@ class in `CLASSES` (that sets the section order), give each game a title (in `TN
 a unique `st` sticker and a `wh` wheel emoji (old-board-safe emoji only, nothing newer than ~2016),
 rebuild, test, push. Ask which class a new lesson is for if it is not on the sheet.
 
+## Dragging
+`dragify()` shrinks any big card around the finger while it is dragged (at most 300 px wide and
+45% of the screen width), so a card always covers just one target. Keep that when adding drag games.
+
 ## Testing tips
 - A quick check (open every game, answer one question, watch for page errors) is enough;
   random-clicking bots get stuck on the ordering/matching games, which is not a bug.

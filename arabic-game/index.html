@@ -1133,15 +1133,17 @@ function dragify(el, onDrop) {
   el.addEventListener("pointerdown", function (e) {
     if (el.disabled || !el.classList.contains("drag") || (e.button && e.button > 0)) return;
     var sx = e.clientX, sy = e.clientY, ghost = null, r = el.getBoundingClientRect();
+    /* big cards shrink around the finger while dragged, so they cover only one target */
+    var sc = Math.min(1.06, 300 / r.width, innerWidth * 0.45 / r.width, 160 / r.height);
     function mv(ev) {
       var dx = ev.clientX - sx, dy = ev.clientY - sy;
       if (!ghost && Math.abs(dx) + Math.abs(dy) > 12) {
         ghost = el.cloneNode(true); ghost.classList.add("ghost"); ghost.removeAttribute("id");
         var cs = getComputedStyle(el);
-        ghost.style.cssText += ";position:fixed;left:" + r.left + "px;top:" + r.top + "px;width:" + r.width + "px;height:" + r.height + "px;margin:0;z-index:60;pointer-events:none;font-size:" + cs.fontSize + ";direction:rtl";
+        ghost.style.cssText += ";position:fixed;left:" + r.left + "px;top:" + r.top + "px;width:" + r.width + "px;height:" + r.height + "px;margin:0;z-index:60;pointer-events:none;font-size:" + cs.fontSize + ";direction:rtl;transform-origin:" + (sx - r.left) + "px " + (sy - r.top) + "px";
         document.body.appendChild(ghost); el.classList.add("lifted"); tone([680], "triangle", 0.06, 0.12);
       }
-      if (ghost) { ghost.style.transform = "translate(" + dx + "px," + dy + "px) rotate(-3deg) scale(1.06)"; overAt(ev.clientX, ev.clientY); }
+      if (ghost) { ghost.style.transform = "translate(" + dx + "px," + dy + "px) rotate(-3deg) scale(" + sc + ")"; overAt(ev.clientX, ev.clientY); }
     }
     function up(ev) {
       removeEventListener("pointermove", mv); removeEventListener("pointerup", up); removeEventListener("pointercancel", up);
