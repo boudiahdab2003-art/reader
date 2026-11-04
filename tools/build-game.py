@@ -64,9 +64,9 @@ head = """<!DOCTYPE html>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="google" content="notranslate">
-<meta name="description" content="ألعاب للصف الثاني على السبورة الذكية: الفقرة والجملة والكلمة، والحروف الهجائية.">
+<meta name="description" content="ألعاب للصفين الثاني والثالث على السبورة الذكية: الفقرة والجملة والكلمة، الحروف الهجائية، ق و ك، المذكر والمؤنث.">
 <meta property="og:title" content="هيّا نلعب! الفقرة والجملة والكلمة">
-<meta property="og:description" content="ألعاب ممتعة لدرس الفقرة والجملة والكلمة والحروف الهجائية – للصف الثاني.">
+<meta property="og:description" content="ألعاب ممتعة لدروس العربية – للصف الثاني والصف الثالث.">
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#178a9c">
 <link rel="icon" href="icon.svg" type="image/svg+xml">

@@ -1,6 +1,9 @@
 # هيّا نلعب — Arabic lesson games (nal3ab.pages.dev)
 
-Smart-board games for a 2nd-grade Arabic class (Abdallah's mother is the teacher).
+Smart-board games for Abdallah's mother's Arabic classes: **2nd grade and 3rd grade**.
+The home page has a class switch (الصف الثاني / الصف الثالث); each class sees only its own
+lessons, stickers and wheel. Direct links: nal3ab.pages.dev/#2 and nal3ab.pages.dev/#3
+(the chosen class is also remembered per device).
 Everything is in Arabic, right-to-left, big touch targets, works offline.
 
 ## Where things live
@@ -23,9 +26,22 @@ Everything is in Arabic, right-to-left, big touch targets, works offline.
 - Test before pushing (headless Chromium via Playwright is available in the cloud container).
 
 ## Lessons in the game
+Class 2 (`CLASSES[2].les = [1, 2, 4, 3]`):
 1. قواعد – الدرس الأول: الفقرة والجملة والكلمة (book p. 96–98)
 2. قواعد – الدرس الثاني: الكلمة والحروف الهجائية (p. 102, alphabet picture chart)
 3. إملاء – الدرس الأول: الحرفان المتقاربان في النطق ق – ك (p. 100–101, plus extra phrases)
+   (`les: 4`; `les: 3` is the review section)
+
+Class 3 (`CLASSES[3].les = [5, 6]`):
+5. قواعد: المذكَّر والمؤنَّث – worksheet (بطاقة عمل) by أستاذة نادين فرحات, December 2025,
+   exercises 1–7. Masculine "things" are scarce on the sheet, so كتاب، قلم، بيت، درس were added.
+   الفرس is used only in the pair game (the sheet uses it as feminine in ex. 2 but writes
+   "فرسًا أبيضَ" in ex. 1). Small typos on the sheet were fixed in the game: لِيَقْطِفَ → لِتَقْطِفَ,
+   استيقظُ → اِسْتَيْقَظَ.
+6. نصّ: الدّيك الشُّجاع (Kamal Al-Shartouni), three paragraphs, from a photo of the book page.
+   The word meanings come from the teacher's handwriting above the words
+   (خمّ = بيت الدجاج، نقيق = صوت الدجاج، يجري = يحدث، يقفز = ينطّ، يعود = يرجع، تحوم = تلتفّ).
+   The full text is also readable in a fold-out box under the section.
 
 ## Games (id → name)
 det مُحقّق الفقرة · count عُدّ الكلمات · isit جملة أم لا؟ · order رتّب الجملة · fill أكمل القاعدة ·
@@ -33,11 +49,27 @@ tf صواب أم خطأ · what ما هذا؟ · build ابنِ الكلمة · 
 qkletter ق أم ك؟ · hunt صيّاد الحروف · pos أين الحرف؟ · shape شكل الحرف · qkbig تحدّي ق و ك ·
 match صِل بخط · mcq اختر الجواب · big التحدّي الكبير
 
+Class 3: nouns أين الأسماء؟ (tap the nouns, coloured by إنسان/حيوان/شيء) · sortn صنّف الاسم
+(the 6-box table) · mfg مذكّر أم مؤنّث؟ · hdh هذا أم هذه؟ · mfmatch صِل المؤنّث بالمذكّر ·
+mfwho مذكّره ومؤنّثه · conv حوّل الجملة (pick the right conversion, changed words highlighted) ·
+mfbig تحدّي المذكّر والمؤنّث · story رتّب القصة (puzzle: drag paragraphs/events into numbered
+rows; uses `R.order` with `parts`) · txtorder رتّب جمل النص · txtmean صِل الكلمة بمعناها ·
+txtq فهم النص (true/false + questions)
+
 Features: tree mascot that grows apples, two teams (النجوم / الأقمار), game wheel, one sticker
 per game (saved per device), hint button, drag-and-drop or tap, read-aloud if an Arabic voice exists,
 review of weak rules at the end of each game.
 
 ## Adding a lesson
-Add the data arrays and a renderer `R.<type>` in `game.html`, add the games to `GAMES` with a
-new `les` number, add the section to `LES` and to the section order in `home()`, give each game a
-`st` sticker and `wh` wheel emoji, rebuild, test, push.
+Add the data arrays and a renderer `R.<type>` in `game.html` (or reuse one: `R.order` with
+`parts` makes a story/sequence puzzle, `R.match`, `R.mcq`, `R.tf` with `ctx` for a passage), add the
+games to `GAMES` with a new `les` number, add the section to `LES` and its number to the right
+class in `CLASSES` (that sets the section order), give each game a title (in `TNAME` or `title:`),
+a unique `st` sticker and a `wh` wheel emoji (old-board-safe emoji only, nothing newer than ~2016),
+rebuild, test, push. Ask which class a new lesson is for if it is not on the sheet.
+
+## Testing tips
+- A quick check (open every game, answer one question, watch for page errors) is enough;
+  random-clicking bots get stuck on the ordering/matching games, which is not a bug.
+- The service worker serves the cached page first and refreshes in the background, so after a
+  deploy the smart board shows the new version from the second load.
