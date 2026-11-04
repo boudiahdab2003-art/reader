@@ -14,7 +14,10 @@ Everything is in Arabic, right-to-left, big touch targets, works offline.
 - **Built page:** `arabic-game/index.html` — never edit by hand. Rebuild with
   `python3 tools/build-game.py` (inlines fonts from `tools/fonts-inline.css`, adds old-browser
   CSS fallbacks, offline service worker registration, error box, link-preview tags).
-- **Offline:** `arabic-game/sw.js` (cache name `nal3ab-v1`), `manifest.webmanifest`, `icon.svg`.
+- **Offline:** `arabic-game/sw.js` (cache name `nal3ab-v2`), `manifest.webmanifest`, `icon.svg`.
+  The page is fetched **network-first** (saved copy only offline or after 3 s), so a normal
+  release reaches everyone on their next visit — no cache bump needed. Bump `CACHE` only when
+  `sw.js` itself changes: the new worker deletes the old cache and reloads open pages once.
 - `main` branch is a different project (redirect to qari.pages.dev) — do not touch it.
 
 ## Rules for changes
@@ -96,7 +99,7 @@ rebuild, test, push. Ask which class a new lesson is for if it is not on the she
 
 ## Cloud session limits
 - The session cannot open nal3ab.pages.dev (network policy), so a deploy cannot be checked from
-  here; ask Abdallah to reload the site twice.
+  here; ask Abdallah to open it once to check.
 - Bash heredocs that contain `$$` or `${...}` (Playwright scripts) can be refused by a safety check;
   write test scripts with the Write tool into the scratchpad and run them with `node`.
 
@@ -109,12 +112,13 @@ rebuild, test, push. Ask which class a new lesson is for if it is not on the she
   is small, exactly one `.dz.over` lights up, and the drop lands on the aimed target — on a
   1280×860 "board" and a 390×844 phone. Reload with `about:blank` first: changing only `#2/#3`
   does not reload the page.
-- The service worker serves the cached page first and refreshes in the background, so after a
-  deploy the smart board shows the new version from the second load.
+- Service-worker changes cannot be tested from `file://`: serve the folder on `localhost` with a
+  small Node server and test with Playwright (old files → visit → swap in new files → reload).
 
 ## Change log
 - Oct 2026: class 2 – lessons 1–3 (paragraph/sentence/word, alphabet, ق/ك) and the review.
 - Nov 2026: class switch; class 3 lesson 5 (المذكّر والمؤنّث worksheet) and lesson 6
   (الدّيك الشُّجاع: story puzzle, sentence order, fill the text, word meanings, comprehension);
   story puzzle split into short pieces; small word chip in صنّف الاسم; every drag game shrinks
-  big cards while dragged.
+  big cards while dragged; site switched to network-first (v2) because laptops that had used
+  the site kept showing the old saved version.
