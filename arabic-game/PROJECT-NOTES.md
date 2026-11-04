@@ -54,7 +54,8 @@ Class 3: nouns أين الأسماء؟ (tap the nouns, coloured by إنسان/ح
 mfwho مذكّره ومؤنّثه · conv حوّل الجملة (pick the right conversion, changed words highlighted) ·
 mfbig تحدّي المذكّر والمؤنّث · story رتّب القصة (puzzle: short sentence pieces, one round per paragraph
 part – 7/6/5/3 pieces – then a 5-event round for the whole story; uses `R.order` with `parts`; rows and pieces sit side by
-side on wide screens so nothing is below the fold) · txtorder رتّب جمل النص · txtmean صِل الكلمة بمعناها ·
+side on wide screens so nothing is below the fold) · txtorder رتّب جمل النص · txtfill أكمل النص (1–2 missing words per
+sentence plus one extra word, 6 sentences in story order; `R.fill` with `prompt`) · txtmean صِل الكلمة بمعناها ·
 txtq فهم النص (true/false + questions)
 
 Features: tree mascot that grows apples, two teams (النجوم / الأقمار), game wheel, one sticker
