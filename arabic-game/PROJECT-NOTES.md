@@ -50,7 +50,7 @@ qkletter ق أم ك؟ · hunt صيّاد الحروف · pos أين الحرف؟
 match صِل بخط · mcq اختر الجواب · big التحدّي الكبير
 
 Class 3: nouns أين الأسماء؟ (tap the nouns, coloured by إنسان/حيوان/شيء) · sortn صنّف الاسم
-(the 6-box table) · mfg مذكّر أم مؤنّث؟ · hdh هذا أم هذه؟ · mfmatch صِل المؤنّث بالمذكّر ·
+(the 6-box table; the word is a small chip so it fits over one box while dragged) · mfg مذكّر أم مؤنّث؟ · hdh هذا أم هذه؟ · mfmatch صِل المؤنّث بالمذكّر ·
 mfwho مذكّره ومؤنّثه · conv حوّل الجملة (pick the right conversion, changed words highlighted) ·
 mfbig تحدّي المذكّر والمؤنّث · story رتّب القصة (puzzle: short sentence pieces, one round per paragraph
 part – 7/6/5/3 pieces – then a 5-event round for the whole story; uses `R.order` with `parts`; rows and pieces sit side by

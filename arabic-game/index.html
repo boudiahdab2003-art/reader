@@ -476,6 +476,11 @@ button:focus-visible{outline:4px solid var(--sun);outline-offset:3px}
 .mfb.ok{background:var(--green);border-color:var(--green);color:#fff;--sh:var(--green-d)}
 .mfb.no{background:var(--red-s);border-color:var(--red);color:var(--red-d);--sh:var(--red)}
 .mfcard .emo,.statement .emo{font-size:1.1em}
+/* sorting game: a small word chip that fits over one box while it is dragged */
+.thing.mfcard{align-self:center;width:auto;max-width:100%;min-height:0;padding:6px 28px;border-radius:999px;border-color:var(--green);background:var(--green-s);font-size:3rem;font-size:clamp(2rem,4vw,3rem);line-height:1.5}
+.thing.mfcard.ghost{opacity:.8}
+.mft .mfb{min-height:112px;font-size:2rem;font-size:clamp(1.3rem,2.5vw,2rem)}
+.mfb.over{background:var(--cs);border-color:var(--c);transform:scale(1.04)}
 .tfb.mm{background:var(--teal);--sh:var(--teal-d)} .tfb.ff{background:var(--pink);--sh:var(--pink-d)}
 .copts{display:flex;flex-direction:column;gap:14px}
 .opt.copt{min-height:0;font-size:2.1rem;font-size:clamp(1.3rem,2.6vw,2.1rem)}
