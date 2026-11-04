@@ -49,14 +49,25 @@ tf صواب أم خطأ · what ما هذا؟ · build ابنِ الكلمة · 
 qkletter ق أم ك؟ · hunt صيّاد الحروف · pos أين الحرف؟ · shape شكل الحرف · qkbig تحدّي ق و ك ·
 match صِل بخط · mcq اختر الجواب · big التحدّي الكبير
 
-Class 3: nouns أين الأسماء؟ (tap the nouns, coloured by إنسان/حيوان/شيء) · sortn صنّف الاسم
-(the 6-box table; the word is a small chip so it fits over one box while dragged) · mfg مذكّر أم مؤنّث؟ · hdh هذا أم هذه؟ · mfmatch صِل المؤنّث بالمذكّر ·
-mfwho مذكّره ومؤنّثه · conv حوّل الجملة (pick the right conversion, changed words highlighted) ·
-mfbig تحدّي المذكّر والمؤنّث · story رتّب القصة (puzzle: short sentence pieces, one round per paragraph
-part – 7/6/5/3 pieces – then a 5-event round for the whole story; uses `R.order` with `parts`; rows and pieces sit side by
-side on wide screens so nothing is below the fold) · txtorder رتّب جمل النص · txtfill أكمل النص (1–2 missing words per
-sentence plus one extra word, 6 sentences in story order; `R.fill` with `prompt`) · txtmean صِل الكلمة بمعناها ·
-txtq فهم النص (true/false + questions)
+Class 3, lesson 5 (المذكّر والمؤنّث):
+- nouns أين الأسماء؟ – tap the nouns in a sentence; each lights up as إنسان/حيوان/شيء
+- sortn صنّف الاسم – the worksheet's 6-box table; the word is a small chip so it fits over one box
+- mfg مذكّر أم مؤنّث؟ – always includes one feminine word without ة (الشمس، الريح، السماء، الأم)
+- hdh هذا أم هذه؟ – exercise 3
+- mfmatch صِل المؤنّث بالمذكّر – exercise 2 animal pairs
+- mfwho مذكّره ومؤنّثه – "ما مؤنث الجمل؟" and the reverse
+- conv حوّل الجملة – exercises 4–5; pick the right conversion, changed words highlighted
+- mfbig تحدّي المذكّر والمؤنّث – 10 mixed questions
+
+Class 3, lesson 6 (الدّيك الشُّجاع):
+- story رتّب القصة – the puzzle: short sentence pieces, one round per paragraph part
+  (7/6/5/3 pieces), then a 5-event round for the whole story; `R.order` with `parts`; rows and
+  pieces sit side by side on wide screens so nothing is below the fold
+- txtorder رتّب جمل النص – word-order sentences from the text
+- txtfill أكمل النص – 1–2 missing words per sentence plus one extra word that does not belong,
+  6 of 12 sentences in story order; `R.fill` with `prompt`
+- txtmean صِل الكلمة بمعناها – the teacher's handwritten meanings
+- txtq فهم النص – true/false then multiple choice, ending with "why is the rooster brave?"
 
 Features: tree mascot that grows apples, two teams (النجوم / الأقمار), game wheel, one sticker
 per game (saved per device), hint button, drag-and-drop or tap, read-aloud if an Arabic voice exists,
@@ -74,8 +85,36 @@ rebuild, test, push. Ask which class a new lesson is for if it is not on the she
 `dragify()` shrinks any big card around the finger while it is dragged (at most 300 px wide and
 45% of the screen width), so a card always covers just one target. Keep that when adding drag games.
 
+## Working with Abdallah
+- He writes short requests ("release", "update memory", "split it more"). "Release" means push
+  to `claude/arabic-lesson-game-191kzn` (that deploys the site). "Memory" means this file.
+- He forwards his mother's material: scanned PDFs, worksheets, or phone photos of book pages
+  (sometimes with her handwritten notes, e.g. word meanings — use them).
+- Say which class a new lesson goes to; a 3rd-grade sheet says "الصف: الثالث الأساسي".
+- Point out anything changed from the source (typos fixed, ambiguous words left out, words added).
+- He likes visible, tested results: screenshots of the real page, a drag test, then release.
+
+## Cloud session limits
+- The session cannot open nal3ab.pages.dev (network policy), so a deploy cannot be checked from
+  here; ask Abdallah to reload the site twice.
+- Bash heredocs that contain `$$` or `${...}` (Playwright scripts) can be refused by a safety check;
+  write test scripts with the Write tool into the scratchpad and run them with `node`.
+
 ## Testing tips
 - A quick check (open every game, answer one question, watch for page errors) is enough;
   random-clicking bots get stuck on the ordering/matching games, which is not a bug.
+  Solve those properly instead: match by `data-i` (col a ↔ col b), and for story/order rounds
+  read the right order from `game.html` and tap the bank tiles in that order.
+- For drag problems, drag with `page.mouse` (down → move in steps → up) and check that the ghost
+  is small, exactly one `.dz.over` lights up, and the drop lands on the aimed target — on a
+  1280×860 "board" and a 390×844 phone. Reload with `about:blank` first: changing only `#2/#3`
+  does not reload the page.
 - The service worker serves the cached page first and refreshes in the background, so after a
   deploy the smart board shows the new version from the second load.
+
+## Change log
+- Oct 2026: class 2 – lessons 1–3 (paragraph/sentence/word, alphabet, ق/ك) and the review.
+- Nov 2026: class switch; class 3 lesson 5 (المذكّر والمؤنّث worksheet) and lesson 6
+  (الدّيك الشُّجاع: story puzzle, sentence order, fill the text, word meanings, comprehension);
+  story puzzle split into short pieces; small word chip in صنّف الاسم; every drag game shrinks
+  big cards while dragged.
