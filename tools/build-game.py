@@ -4,7 +4,7 @@ game.html is the source (also published as the claude.ai artifact). The built pa
 embeds its fonts, so it needs no internet, and registers sw.js for offline use.
 Run from the repo root:  python3 tools/build-game.py
 """
-import re
+import hashlib, re
 
 src = open("arabic-game/game.html", encoding="utf-8").read()
 fonts = open("tools/fonts-inline.css", encoding="utf-8").read()
@@ -64,7 +64,8 @@ head = """<!DOCTYPE html>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="google" content="notranslate">
-<meta name="description" content="ألعاب للصفين الثاني والثالث على السبورة الذكية: الفقرة والجملة والكلمة، الحروف الهجائية، ق و ك، المذكر والمؤنث.">
+<meta name="description" content="ألعاب للصفوف الثاني والثالث والرابع على السبورة الذكية: الفقرة والجملة والكلمة، الحروف الهجائية، ق و ك، المذكر والمؤنث، الجمع والمثنى.">
+<meta name="nal3ab-build" content="__BUILD__">
 <meta property="og:title" content="هيّا نلعب! الفقرة والجملة والكلمة">
 <meta property="og:description" content="ألعاب ممتعة لدروس العربية – للصف الثاني والثالث والرابع.">
 <meta property="og:type" content="website">
@@ -80,6 +81,36 @@ window.onerror = function (msg, src, line) {
 </script>
 """
 offline = """
+<script>
+/* devices that keep the page open (smart boards) look for a new version every few minutes and
+   when the page is shown again; it reloads by itself, but only on the home screen, never mid-game */
+(function () {
+  var BUILD = "__BUILD__", newer = "", timer = 0;
+  if (!window.fetch || !/^https?:$/.test(location.protocol)) return;
+  function onHome() { return !!document.querySelector("#app .hero") && !document.querySelector("#wheelOv:not([hidden])"); }
+  function tryReload() {
+    if (!newer) return;
+    var tried = ""; try { tried = sessionStorage.getItem("nal3abReloaded") || ""; } catch (e) {}
+    if (tried === newer) return;
+    if (!onHome()) { if (!timer) timer = setInterval(tryReload, 4000); return; }
+    try { sessionStorage.setItem("nal3abReloaded", newer); } catch (e) {}
+    location.reload();
+  }
+  function check() {
+    if (navigator.onLine === false) return;
+    try { navigator.serviceWorker.getRegistration().then(function (r) { if (r) r.update(); }).catch(function () {}); } catch (e) {}
+    fetch(location.pathname + "?check=" + new Date().getTime(), { cache: "no-store" }).then(function (r) { return r.ok ? r.text() : ""; }).then(function (t) {
+      var m = /name="nal3ab-build" content="([^"]+)"/.exec(t);
+      if (m && m[1] !== BUILD && m[1] !== "__" + "BUILD__") { newer = m[1]; tryReload(); }
+    }).catch(function () {});
+  }
+  setTimeout(check, 15000);
+  setInterval(check, 5 * 60 * 1000);
+  document.addEventListener("visibilitychange", function () { if (!document.hidden) check(); });
+  window.addEventListener("online", check);
+  window.addEventListener("pageshow", function (e) { if (e.persisted) check(); });
+})();
+</script>
 <noscript><p style="font:700 1.5rem Tahoma,sans-serif;text-align:center;padding:40px">يَحْتاجُ هٰذا الْمَوْقِعُ إِلى تَشْغيلِ JavaScript في الْمُتَصَفِّحِ.</p></noscript>
 <script>
 (function () { var d = document.createElement("div"); d.style.cssText = "display:flex;flex-direction:column;row-gap:1px;position:absolute"; d.appendChild(document.createElement("div")); d.appendChild(document.createElement("div")); document.body.appendChild(d); if (d.scrollHeight !== 1) document.documentElement.className += " nogap"; d.parentNode.removeChild(d); })();
@@ -96,5 +127,8 @@ if ("serviceWorker" in navigator && (location.protocol === "https:" || location.
 """
 cut = src.index("</style>", src.index("/* Layout:")) + len("</style>")
 out = head + src[:cut] + compat + "\n</head>\n<body>\n" + src[cut:].lstrip("\n") + offline + "</body>\n</html>\n"
+# a fingerprint of this build: open pages compare it with the live page and reload when it changed
+build = hashlib.sha1(out.encode()).hexdigest()[:12]
+out = out.replace("__BUILD__", build)
 open("arabic-game/index.html", "w", encoding="utf-8").write(out)
-print("arabic-game/index.html", len(out.encode()) // 1024, "KB")
+print("arabic-game/index.html", len(out.encode()) // 1024, "KB, build", build)

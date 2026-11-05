@@ -16,7 +16,11 @@ Everything is in Arabic, right-to-left, big touch targets, works offline.
   CSS fallbacks, offline service worker registration, error box, link-preview tags).
 - **Offline:** `arabic-game/sw.js` (cache name `nal3ab-v2`), `manifest.webmanifest`, `icon.svg`.
   The page is fetched **network-first** (saved copy only offline or after 3 s), so a normal
-  release reaches everyone on their next visit — no cache bump needed. Bump `CACHE` only when
+  release reaches everyone on their next visit — no cache bump needed.
+  Pages left open (smart boards) also update: the built page carries a build fingerprint
+  (`<meta name="nal3ab-build">`, made by build-game.py); every 5 min and whenever the tab is shown
+  again it fetches the live page, and if the fingerprint changed it reloads — only on the home
+  screen, never mid-game, and at most once per new build (sessionStorage guard). Bump `CACHE` only when
   `sw.js` itself changes: the new worker deletes the old cache and reloads open pages once.
 - `main` branch is a different project (redirect to qari.pages.dev) — do not touch it.
 
@@ -136,7 +140,8 @@ rebuild, test, push. Ask which class a new lesson is for if it is not on the she
 
 ## Change log
 - Oct 2026: class 2 – lessons 1–3 (paragraph/sentence/word, alphabet, ق/ك) and the review.
-- 5 Nov 2026: class 4 – plurals/dual (unit 3, p. 113–117) and the poem الطّائرة.
+- 5 Nov 2026: class 4 – plurals/dual (unit 3, p. 113–117) and the poem الطّائرة; open pages
+  now check for a new version and reload on the home screen.
 - Nov 2026: class switch; class 3 lesson 5 (المذكّر والمؤنّث worksheet) and lesson 6
   (الدّيك الشُّجاع: story puzzle, sentence order, fill the text, word meanings, comprehension);
   story puzzle split into short pieces; small word chip in صنّف الاسم; every drag game shrinks
