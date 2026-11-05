@@ -1,8 +1,8 @@
 # هيّا نلعب — Arabic lesson games (nal3ab.pages.dev)
 
-Smart-board games for Abdallah's mother's Arabic classes: **2nd grade and 3rd grade**.
-The home page has a class switch (الصف الثاني / الصف الثالث); each class sees only its own
-lessons, stickers and wheel. Direct links: nal3ab.pages.dev/#2 and nal3ab.pages.dev/#3
+Smart-board games for Abdallah's mother's Arabic classes: **2nd, 3rd and 4th grade**.
+The home page has a class switch (الصف الثاني / الثالث / الرابع); each class sees only its own
+lessons, stickers and wheel. Direct links: nal3ab.pages.dev/#2, #3 and #4
 (the chosen class is also remembered per device).
 Everything is in Arabic, right-to-left, big touch targets, works offline.
 
@@ -46,6 +46,15 @@ Class 3 (`CLASSES[3].les = [5, 6]`):
    (خمّ = بيت الدجاج، نقيق = صوت الدجاج، يجري = يحدث، يقفز = ينطّ، يعود = يرجع، تحوم = تلتفّ).
    The full text is also readable in a fold-out box under the section.
 
+Class 4 (`CLASSES[4].les = [7, 8]`), book unit 3 «مَنِ السّارِقُ؟», scanned pages 113–117 (p. 116 = poem):
+7. قواعد: الجمع وأنواعه – والمثنّى. Plurals from ex. 1–2 (p. 113: جمع مؤنث سالم / جمع تكسير lists),
+   ex. 4 (p. 114: رُدّ إلى المفرد + نوع الجمع), ex. 5 (p. 115: sentences → مثنى and جمع), the table
+   and ex. 7 on p. 117 (أنا تلميذ مجتهد → نحن/هي/أنتنّ). Left out as ambiguous: the half-cut word
+   "…قعة" on p. 113, كشّاف and النشاط (in the تكسير list but not clearly تكسير), الرطبة/البسيطة.
+   Accepted alternatives are named in the explanations (العمّال/العاملين, السيّاح/السائحون).
+8. قصيدة: الطّائرة (p. 116), two stanzas, each ending with a refrain; the book's questions a/b
+   (صوت الطائرة = الرعد, صدرها = داخل الطائرة) are always asked. Readable in a fold-out box.
+
 ## Games (id → name)
 det مُحقّق الفقرة · count عُدّ الكلمات · isit جملة أم لا؟ · order رتّب الجملة · fill أكمل القاعدة ·
 tf صواب أم خطأ · what ما هذا؟ · build ابنِ الكلمة · letter الحرف الأول · qkword أيّ كلمة صحيحة؟ ·
@@ -71,6 +80,16 @@ Class 3, lesson 6 (الدّيك الشُّجاع):
   6 of 12 sentences in story order; `R.fill` with `prompt`
 - txtmean صِل الكلمة بمعناها – the teacher's handwritten meanings
 - txtq فهم النص – true/false then multiple choice, ending with "why is the rooster brave?"
+
+Class 4, lesson 7 (الجمع والمثنّى):
+- jtype ما نوع الجمع؟ – drag the plural onto one of 3 boxes; always one trick word
+  (أوقات/أصوات = تكسير, منتجات/حيوانات/اختراعات = مؤنث سالم of a masculine singular); `R.jtype`
+- jplural اجمع الكلمة – MCQ: right plural, its dual, and a wrong ending
+- jsing رُدّ إلى المفرد – match plural ↔ singular
+- jconv حوّل إلى المثنى والجمع – `R.conv` with a custom `dir` label
+- jbig تحدّي الجمع
+Class 4, lesson 8 (الطائرة): porder رتّب القصيدة (stanza puzzles, then whole poem), pfill أكمل
+القصيدة, pq فهم القصيدة (passage shows the stanza: `PTXT.a1/a2` are arrays of lines), pjam جموع القصيدة.
 
 Features: tree mascot that grows apples, two teams (النجوم / الأقمار), game wheel, one sticker
 per game (saved per device), hint button, drag-and-drop or tap, read-aloud if an Arabic voice exists,
@@ -117,6 +136,7 @@ rebuild, test, push. Ask which class a new lesson is for if it is not on the she
 
 ## Change log
 - Oct 2026: class 2 – lessons 1–3 (paragraph/sentence/word, alphabet, ق/ك) and the review.
+- 5 Nov 2026: class 4 – plurals/dual (unit 3, p. 113–117) and the poem الطّائرة.
 - Nov 2026: class switch; class 3 lesson 5 (المذكّر والمؤنّث worksheet) and lesson 6
   (الدّيك الشُّجاع: story puzzle, sentence order, fill the text, word meanings, comprehension);
   story puzzle split into short pieces; small word chip in صنّف الاسم; every drag game shrinks
